@@ -1,0 +1,19 @@
+Package: seal.econum
+Title: Conversion, correction et analyse des données provenant du seal AA3 d'ECONUM
+Version: 0.0.0.9000
+Authors@R: c(
+  person("Guyliann", "Engels", role = c("aut", "cre"),
+  email = "guyliann.engels@umons.ac.be"),
+  person("Raphael", "Conotte", role = "aut",
+  email = "raphael.conotte@outlook.com"))
+Description: Ensemble d'outils permettant la conversion, la correction et 
+    l'analyse des données fournies pour le seal aa3 du laboratoire
+    d'écologie numérique des milieux aquatiques de l'Université de Mons (Belgique).
+Depends: R (>= 3.4.4)
+License: CC BY-SA 4.0
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0
+Imports: 
+    magrittr,
+    stats
