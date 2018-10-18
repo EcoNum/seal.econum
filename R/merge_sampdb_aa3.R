@@ -51,3 +51,9 @@ merge_sampdb_aa3 <- function(sampdb_org, sampdb_inorg) {
 
   return(samp_org_inorg)
 }
+
+
+data("samp_inorga")
+data("samp_orga")
+
+samp <- merge_sampdb_aa3(sampdb_org = samp_orga, sampdb_inorg = samp_inorga)

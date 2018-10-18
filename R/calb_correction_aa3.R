@@ -17,7 +17,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr bind_rows
 #' @examples
-#' # TO DO
+#' # TODO
 #'
 calb_correction_aa3 <- function(aa3, filter_list) {
 

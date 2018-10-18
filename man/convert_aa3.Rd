@@ -15,7 +15,7 @@ convert_aa3(file_aa3_txt, file_aa3_xlsx)
 un objet converti
 }
 \description{
-Conversion of aa3 file txt and excell
+Conversion du fichier fourni par l autoanalysuer seal AA3 au format txt  a l aide d un fichier complementaire au format xlsx
 }
 \examples{
 

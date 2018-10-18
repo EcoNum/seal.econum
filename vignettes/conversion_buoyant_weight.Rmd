@@ -1,0 +1,67 @@
+---
+title: "Conversion of buoyant weight into skeleton weight"
+author: "Engels Guyliann"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Conversion of buoyant weight into skeleton weight}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Le croissance des coraux est un processus complexe. L'utilisation de la méthode du poids immergé afin de déterminer la croissance des coraux est :
+
+- une méthode directe et simple,
+
+- une méthode laissant les boutures dans l'eau (permet de ne pas avoir de problème suite à la quantité d'eau dans les tissus )
+
+- une méthode non destructive,
+
+- une méthode sensible (même à moins de 12H)
+
+Le principe d'archimède permet de convertir le poids immergé en poids du squelette via la formule suivante Jokiel et al (1978) :
+
+$$w_{a} = \frac{w_{w}}{1 - \frac{D_w}{D_a}}$$
+
+où $w_{a}$ est le poids du squelette (principalement composé d'aragonite),  $w_{w}$ est le poids immergé, $D_w$ est densité de l'eau de mer (qui peut être calculé via la fonction `rho()` du package `seacarb`), $D_a$ est la densité de l'aragonite  qui est de $2390 \ g/dm^3$.
+
+Le changement de poids au cours du temps quantifie le taux de calcification ou autrement dit le taux de croissance. Il a été démontré que le pourcentage d'augementation de la masse du squelette au cours du temps dépend du poids initiale de la bouture. La présence de masse morte au sein des coraux est un problème dans la détermination du taux de croissance véritable des boutures.
+
+Partons d'un exemple d'une bouture de 1.5 grammes mesuré dans une eau avec une salinité de 35, une température de 25°C, et une pression hydrostatique de 0.
+
+
+Premièrement, il faut déterminer la densité de l'eau de mer via la fonction de *rho()* du package *seacard*. 
+
+```{r}
+(x <- seacarb::rho(S = 35, T = 25, P = 0))
+```
+
+Ensuite, il faut employer la valeur obtenue ci-dessus pour déterminer la masse squeletique de la bouture.
+
+```{r}
+buoyant_weight <- 1.5
+rho_aragonite <- 2930
+(y <- buoyant_weight / (1 - (x / rho_aragonite)))
+```
+
+Les étapes citées ci-dessus peuvent être facilement placé dans une fonction.
+
+```{r}
+skeleton_weight <- function(buoyant_weight, S, T, P = 0, rho_aragonite = 2930){
+  x <- seacarb::rho(S = S, T = T, P = P)
+  y <- buoyant_weight / (1 - (x / rho_aragonite))
+  attributes(y) <- NULL
+  y
+}
+
+(x <- skeleton_weight(buoyant_weight = 1.5, S = 35, T = 25, P = 0, rho_aragonite = 2930))
+```
+

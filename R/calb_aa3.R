@@ -158,6 +158,6 @@ calb_aa3 <- function(x){
   calibration <- (list(calbdb = calb_db, regression = lm_tab,
                        graph = graph_list, sampdb = samp_df))
 
-  class(calibration) <- c("calb_aa3", "aa3", "liste")
+  class(calibration) <- c("calb_aa3", "aa3", "list")
   return(calibration)
 }

@@ -22,6 +22,6 @@ un dataframe avec les donnees SAMP recalculee.
 calb_correction
 }
 \examples{
-# TO DO
+# TODO
 
 }

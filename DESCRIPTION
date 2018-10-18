@@ -1,6 +1,6 @@
 Package: seal.econum
 Title: Conversion, correction et analyse des données provenant du seal AA3 d'ECONUM
-Version: 0.0.1.1
+Version: 0.0.1.2
 Authors@R: c(
   person("Guyliann", "Engels", role = c("aut", "cre"),
   email = "guyliann.engels@umons.ac.be"),

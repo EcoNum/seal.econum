@@ -2,3 +2,5 @@
 ^devtools_history\.R$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+README.md
+LICENSE

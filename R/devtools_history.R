@@ -3,6 +3,7 @@ usethis::use_build_ignore("devtools_history.R")
 usethis::use_build_ignore("data-raw")
 # Add vignette -----
 # usethis::use_vignette("seal_data_to_Econum_labs")
+# usethis::use_vignette("conversion_buoyant_weight")
 # add package to description for function ----
 usethis::use_package("dplyr")
 usethis::use_package("flow")

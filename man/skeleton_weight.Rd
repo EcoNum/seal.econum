@@ -7,7 +7,7 @@
 skeleton_weight(buoyant_weight, S, T, P = 0, rho_aragonite = 2930)
 }
 \arguments{
-\item{buoyant_weight}{the buoyant weight in gramme}
+\item{buoyant_weight}{buoyant weight in gramme}
 
 \item{S}{salinity in PSU}
 
@@ -15,7 +15,7 @@ skeleton_weight(buoyant_weight, S, T, P = 0, rho_aragonite = 2930)
 
 \item{P}{hydrostatic pressure in bar}
 
-\item{rho_aragonite}{densite de l'aragonite}
+\item{rho_aragonite}{density of the  aragonite}
 }
 \value{
 skeleton weight
@@ -32,6 +32,6 @@ data(growth) # load data
 growth$skeleton_weight <- skeleton_weight(buoyant_weight = growth$weight,
 S = growth$salinity, T = growth$temperature, P = 0, rho_aragonite = 2930) # compute new variable
 growth$skeleton_weight # see the new variable
-
+# more information see vignette
 
 }

@@ -1,5 +1,7 @@
 #' Conversion of aa3 file txt and excell
 #'
+#' Conversion du fichier fourni par l autoanalysuer seal AA3 au format txt  a l aide d un fichier complementaire au format xlsx
+#'
 #' @param file_aa3_txt txt file
 #' @param file_aa3_xlsx xlsx file
 #'

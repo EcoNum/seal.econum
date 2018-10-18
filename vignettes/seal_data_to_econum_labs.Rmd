@@ -16,16 +16,30 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
+
 La laboratoire d'Ecologie Numérique des Milieux Aquatiques de l'Université de Mons utilise un autoanalyseur **seal AA3** dans ces recherces. Cet instrument permet de quantifier avec une grande précision :
 
-- azote organique
-- phosphore organique
-- azote inorganique (nitrite, nitrate, ammonium)
-- azote inorganique (phosphate)
 
-L'instrument utilise deux méthodes pour analyser les différents composés ci-dessus. La première mesure les phosphotes, les nitrates et les ammonium et la seconde méthode mesure l'azote total, le phosphore total et les nitrites.
+|    Molécules    | Abbréviation |
+|:---------------:|:----------------:|
+| Phosphore total |     $$Ptot$$     |
+|   Azote total   |     $$Ntot$$     |
+|     Nitrate     |     $$NO_3$$     |
+|     Nitrite     |     $$NO_2$$     |
+|     Ammonium    |     $$NH_4$$     |
+|    Phosphate    |     $$PO_4$$     |
 
-Le seal AA3 renvoit des fichiers textes comme le montre le tableau ci-dessous. Le nom des fichier est toujours la date inversée suivi d'une lettre (ex : 181009A, concernne une analyse fait le 9 octobre 2018)
+
+L'instrument utilise deux méthodes pour analyser les différents composés ci-dessus. Par simplicité, les termes **méthode organique** et  **méthode inorganique** sont employés.
+
+| Méthode organique  | Methode inorganique |
+|:-----------------------------:|:-----------------------:|
+|        $$PO_4$$               |         $$Ptot$$        |
+|     $$NO_x = NO_3 + NO_2$$    |         $$Ntot$$        |
+|        $$NH_4$$               |         $$NO_2$$        |
+
+Le seal AA3 renvoit des fichiers au format texte comme le montre le tableau ci-dessous. Le nom des fichier est toujours la date inversée suivi d'une lettre (ex : 181009A, concernne une analyse fait le 9 octobre 2018).
 
 ```{r}
 aa3_txt <- "../inst/extra_data/181009A.TXT"
@@ -62,11 +76,11 @@ Les informations manquantes sont :
 
 Il est dès lors indispensable de proposer des outils permettant de combiner ces manquements.
 
-## Importation et Conversion du fichier texte du Seal AA3
+## Importation et Conversion des données
 
 ## Principe
 
-Tout d’abord, il est intéressant d’encoder proprement les données. Il faut de plus pallier aux manquements cités ci-dessus, la solutions la plus simple est de rédiger un second fichier sous la forme d’un template conçu à cet effet afin de venir ajouter l’ensemble des informations manquantes. Ce second document est d’une importance capitale afin de connaitre la provenance d’un échantillon. Pour ce faire, la colonne sample.id va servir de lien entre les deux tableaux. Le nom donné au second ficier est le même que celui du premier avec une extension différente.
+Tout d’abord, il est intéressant d’encoder proprement les données. Il faut de plus pallier aux manquements cités ci-dessus, la solutions la plus simple est de rédiger un second fichier sous la forme d’un template conçu à cet effet afin de venir ajouter l’ensemble des informations manquantes. Ce second document est d’une importance capitale afin de connaitre la provenance d’un échantillon. Pour ce faire, la colonne sample.id va servir de lien entre les deux tableaux. Le nom donné au second fichier est le même que celui du premier avec une extension différente.
 
 ```{r}
 library(seal.econum)
@@ -75,79 +89,76 @@ aa3_txt <- "../inst/extra_data/181009A.TXT"
 aa3_xlsx <- "../inst/extra_data/181009A.xlsx"
 # utilisation de la fonction d'importation et de conversion des données
 aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt, file_aa3_xlsx = aa3_xlsx)
-```
-
-Le jeu de données se présente de la manière suivante :
-
-```{r}
 knitr::kable(aa3_combine)
 ```
 
-Ce dernier comprend un ensemble d'attribus lié aux métadonnées du fichier au format txt.
+Ce tableau de données comprend un ensemble d'attribus lié aux métadonnées du fichier au format txt.
 
 ```{r}
 attributes(aa3_combine)
 ```
 
-## Visualisation de la calibration et correction
+# Validation des données 
 
-Une fois les échantillons analysés et convertis, il faut maintenant valider l'analyer en s'assurant du bon déroulant de cette dernière d'un point de vu technique.
+Une fois les données encodées, une phase de validation de ces dernières est indispensbale.
+
+## Validation de la calibration
 
 ### Visualisation des calibrations
 
-La fonction calb_aa3 n'utilise qu'un seul argument, l'objet formé suite à la conversion des données de l'autoanalyseur.
+La fonction calb_aa3 n'utilise qu'un seul argument, l'objet formé suite à la conversion des données de l'autoanalyseur. Ce dernier a pour classe aa3 et cette classe est employé afin de n'accepter que ce type de fichier.
 
 ```{r}
 calb <- calb_aa3(aa3_combine)
 ```
-L'objet calb comprend différents élements : 
+L'objet calb est une liste qui comprend 4 éléments différents. La classe de ce nouvelle objet est calb_aa3. 
 
 ```{r}
 attributes(calb)
 ```
 
-#### calbbd
-
-Cet objet comprend le tableau de données composé uniquement des données lié à la calibration.
+Au sein de cette liste, **calbdb** comprend les données de lié à la calibration. Le formatage de ces données ont pour vocation d'être facilement enregistré sur une base de données ou en local dans un fichier de données. **regression** est un tableau de données résumant les valeurs importantes des régressions linéaires. **graph** comprend les graphiques lié au analyses ainsi que les graphiques liées aux régressions linéaires réalisées pour déterminer les concentrations des molécules. **sampdb** contient les échantillons liés uniquement à l'expérience. Après validation, ces données seront les seules à exploiter.
 
 ```{r}
-calb$calbdb
+calb
 ```
 
-Ce dernier a pour vocation d'être facilement sauvegardé sur une base de données ou en local dans un fichier de données. 
-
-#### regression
-
-Cet objet comprend un résumé sous la forme de tableau des régressions linéaires.
-
-```{r}
-calb$regression
-```
-
-Cet objet comprend les graphiques lié aux régressions linéaires.
-
-```{r}
-calb$graph
-```
-
-Cet objet comprend les échantillons liés uniquement à l'expérience.
-
-```{r}
-calb$sampdb
-```
 
 ## Correction des données de calibration
 
-Les données de calibration peuvent être eronée et il faut nécéssairement que ces dernières soit validés. Pour ce faire, la fonction calb_correction_aa3() a été mise au point.
+Les données de calibration peuvent être eronée. Pour ce faire, la fonction calb_correction_aa3() a été mise au point. L'objet obtenu ressemble fortement à celui proposé par la fonction **calb_aa3**. Cette fonction requiert un objet de type calb_aa3. L'argument permettant de corriger plusieurs courbe de calibration en une seule fonction est **filter_list**
 
 ```{r}
-#calb_corr <- calb_correction_aa3(aa3 = calb, 
-#                                 filter_list = list(NH4 =c(0.1, 0.5)))
+(calb_corr <- calb_correction_aa3(aa3 = calb, 
+                                 filter_list = list(NH4 =c(0.1, 0.5))))
 ```
 
 
-Après avoir validé les différentes étapes on peut sauvegarder les données de calibration et les échantillons dans une autres. 
+# Sauvegarde des données 
 
-## Compilation des données des deux méthodes
+Les données après la phase de validation sont sauvegardé. Actuellement, ces dernières sont sauvé en 4 fichiers au format rds. avec la fonction **saveRDS()**.
 
-Les prélèvements sont 
+L'un des prochains objectif est de pouvoir envoyer ces données dans une base de données dédiés à cet effet.
+
+# Compilation des données des deux méthodes
+
+Les deux méthodes d'analyses des échantillons proposé par l'autoanalyseur **seal AA3** se font en deux batchs distincst avec des paramètres et des solvants différents. Il y a donc un décalage dans le temps. De ce fait apès avoir réalisé l'importation, la validation et la sauvegarde des données, une étape de récupération des données est indispensable. Actuellement, la fonction readRDS() est employé suivi d'un filtre afin de ne garder que le projet lié à l'expérience analysée. 
+
+```{r}
+data("samp_inorga")
+data("samp_orga")
+```
+
+Les deux fichiers filtrées sont à combiner avec la fonction **merge_sampdb_aa3()**.  Cette fonction combine les données et calcule la concentration en nitrate qui provient du calcule suivant :
+
+$NO_X - NO_2 = NO_3$
+
+```{r}
+(merge <- merge_sampdb_aa3(sampdb_org = samp_orga, sampdb_inorg = samp_inorga))
+```
+
+```{r}
+attributes(merge)
+```
+
+Après avoir suivi ces différentes étapes, le tableau de données obtenu peut être employé.
