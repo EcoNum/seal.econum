@@ -16,8 +16,16 @@
 #'
 #' skeleton_weight(buoyant_weight = 25, S = 35, T = 25, P = 0, rho_aragonite = 2930)
 #'
+#' # second example on a dataset , growth
+#' data(growth) # load data
+#' growth$skeleton_weight <- skeleton_weight(buoyant_weight = growth$weight,
+#' S = growth$salinity, T = growth$temperature, P = 0, rho_aragonite = 2930) # compute new variable
+#' growth$skeleton_weight # see the new variable
+#'
+#'
 skeleton_weight <- function(buoyant_weight, S, T, P = 0, rho_aragonite = 2930){
   x <- seacarb::rho(S = S, T = T, P = P)
   y <- buoyant_weight / (1 - (x / rho_aragonite))
+  attributes(y) <- NULL
   y
 }

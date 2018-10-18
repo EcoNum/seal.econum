@@ -27,4 +27,11 @@ The buoyant weight is a simply tools. This method reduces the stress during the 
 
 skeleton_weight(buoyant_weight = 25, S = 35, T = 25, P = 0, rho_aragonite = 2930)
 
+# second example on a dataset , growth
+data(growth) # load data
+growth$skeleton_weight <- skeleton_weight(buoyant_weight = growth$weight,
+S = growth$salinity, T = growth$temperature, P = 0, rho_aragonite = 2930) # compute new variable
+growth$skeleton_weight # see the new variable
+
+
 }

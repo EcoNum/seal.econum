@@ -141,8 +141,8 @@ calb$sampdb
 Les données de calibration peuvent être eronée et il faut nécéssairement que ces dernières soit validés. Pour ce faire, la fonction calb_correction_aa3() a été mise au point.
 
 ```{r}
-calb_corr <- calb_correction_aa3(aa3 = calb, 
-                                 filter_list = list(NH4 =c(0.1, 0.5)))
+#calb_corr <- calb_correction_aa3(aa3 = calb, 
+#                                 filter_list = list(NH4 =c(0.1, 0.5)))
 ```
 
 

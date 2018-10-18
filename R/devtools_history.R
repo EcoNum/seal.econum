@@ -1,5 +1,6 @@
 # ignore devtools_history ----
 usethis::use_build_ignore("devtools_history.R")
+usethis::use_build_ignore("data-raw")
 # Add vignette -----
 # usethis::use_vignette("seal_data_to_Econum_labs")
 # add package to description for function ----
