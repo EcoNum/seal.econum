@@ -13,7 +13,8 @@ merge_sampdb_aa3(sampdb_org, sampdb_inorg)
 }
 \value{
 un dataframe avec les donnees combinées des analyses organiques et
-inorganique
+inorganiques ("Ptot_conc", "Ntot_conc", "PO4_conc", "NOx_conc", "NO2_conc",
+"NO3_conc", "NH4_conc")
 }
 \description{
 merge_sampdb_aa3

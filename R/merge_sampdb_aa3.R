@@ -4,7 +4,8 @@
 #' @param sampdb_inorg calb_aa3$sampdb for inorganic
 #'
 #' @return un dataframe avec les donnees combinées des analyses organiques et
-#' inorganique
+#' inorganiques ("Ptot_conc", "Ntot_conc", "PO4_conc", "NOx_conc", "NO2_conc",
+#' "NO3_conc", "NH4_conc")
 #'
 #' @export
 #'
@@ -19,9 +20,10 @@
 #'
 merge_sampdb_aa3 <- function(sampdb_org, sampdb_inorg) {
 
+  # Identify all nutrient values
   nutrient = c("Ptot_conc", "Ntot_conc", "PO4_conc", "NOx_conc",
                "NO2_conc", "NO3_conc", "NH4_conc")
-  nutrient_new = paste(nutrient, "new", sep = "_")
+  nutrient_old = paste(nutrient, "old", sep = "_")
 
   for (i in nutrient_new) {
     if (i %in% c(names(sampdb_inorg), names(sampdb_org))) {

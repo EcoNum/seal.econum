@@ -13,8 +13,8 @@ calb_correction_aa3(aa3, filter_list)
 la régression. (ex : list(Ptot = c(1,2)) -> filter )}
 }
 \value{
-Une liste contenant un dataframe avec les donnees CALB,
-les graphes de controle pour la calibration et la ou les nouvelle(s) droites
+Une liste contenant un dataframe avec les donnees CALB, les graphes
+de controle pour la calibration et la ou les nouvelle(s) droite(s)
 de calibration, un dataframe avec les parametres des regressions et
 un dataframe avec les donnees SAMP recalculee.
 }

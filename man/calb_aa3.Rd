@@ -2,7 +2,7 @@
 % Please edit documentation in R/calb_aa3.R
 \name{calb_aa3}
 \alias{calb_aa3}
-\title{Title}
+\title{calb_aa3}
 \usage{
 calb_aa3(x)
 }
@@ -10,10 +10,12 @@ calb_aa3(x)
 \item{x}{aa3 data}
 }
 \value{
-a list containing a data.frame with the parameters of the regression (intercept, values, r squared and n) and a list of graphs for each method of dosage (plot of all data and linear regression plot)
+Une liste contenant un dataframe avec les donnees CALB,
+les graphes de controle pour la calibration, un dataframe avec les parametres
+des regressions et un dataframe avec les donnees SAMP filtrees
 }
 \description{
-Title
+calb_aa3
 }
 \examples{
 # TODO

@@ -1,8 +1,11 @@
-#' Title
+#' calb_aa3
 #'
 #' @param x aa3 data
 #'
-#' @return a list containing a data.frame with the parameters of the regression (intercept, values, r squared and n) and a list of graphs for each method of dosage (plot of all data and linear regression plot)
+#' @return Une liste contenant un dataframe avec les donnees CALB,
+#' les graphes de controle pour la calibration, un dataframe avec les parametres
+#' des regressions et un dataframe avec les donnees SAMP filtrees
+#'
 #' @import flow
 #' @import ggplot2
 #' @import ggpubr
@@ -20,6 +23,10 @@
 #' # TODO
 #'
 calb_aa3 <- function(x){
+
+  if ( !("aa3" %in% class(x)) ){
+    stop("class is not aa3")
+  }
 
   # Paramètres
   param <- list(method_1 = list(col = c(5,7)),
@@ -100,7 +107,7 @@ calb_aa3 <- function(x){
     names(calb_db_list)[i] <- unique(calb_data$std_type)
 
     # linear model
-    lmod <- lm(as.formula(paste0("calb$", names(calb)[2], "~ calb$", names(calb)[1])))
+    lmod <- lm(calb[,2] ~ calb[,1])
     data.frame(std_name = attr(x = x, which = "method")[[i]]$method,
                intercept = lmod$coefficients[1], values = lmod$coefficients[2],
                r_squared = round(summary(lmod)$r.squared,digits = 4),
@@ -150,5 +157,7 @@ calb_aa3 <- function(x){
 
   calibration <- (list(calbdb = calb_db, regression = lm_tab,
                        graph = graph_list, sampdb = samp_df))
+
+  class(calibration) <- c("calb_aa3", "aa3", "liste")
   return(calibration)
 }

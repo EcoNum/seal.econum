@@ -4,8 +4,8 @@
 #' @param filter_list liste de concentration a supprimer pour recalculer
 #' la régression. (ex : list(Ptot = c(1,2)) -> filter )
 #'
-#' @return Une liste contenant un dataframe avec les donnees CALB,
-#' les graphes de controle pour la calibration et la ou les nouvelle(s) droites
+#' @return Une liste contenant un dataframe avec les donnees CALB, les graphes
+#' de controle pour la calibration et la ou les nouvelle(s) droite(s)
 #' de calibration, un dataframe avec les parametres des regressions et
 #' un dataframe avec les donnees SAMP recalculee.
 #'
@@ -20,6 +20,10 @@
 #' # TO DO
 #'
 calb_correction_aa3 <- function(aa3, filter_list) {
+
+  if ( !("calb_aa3" %in% class(aa3)) ){
+    stop("class is not calb_aa3")
+  }
 
   calb_df <- aa3$calbdb
 
@@ -77,13 +81,15 @@ calb_correction_aa3 <- function(aa3, filter_list) {
     names(graph_list)[i] <- paste(type, "new", sep = "_")
 
     # add new nutrient values
+    cname <- paste(type, "conc", sep = "_")
+    cnum <- which(names(aa3$sampdb) == cname)
+    names(aa3$sampdb)[cnum] <- paste(type, "conc_old", sep = "_")
     aa3$sampdb %>.%
       dplyr::mutate(., new = round((aa3$sampdb[,paste(type, "values", sep = "_")] -
                                lm_mod$coefficients[[1]]) /
                               lm_mod$coefficients[[2]],3)) -> aa3$sampdb
 
-    names(aa3$sampdb)[length(aa3$sampdb)] <- paste(type,"conc","new",
-                                                                 sep = "_")
+    names(aa3$sampdb)[length(aa3$sampdb)] <- paste(type,"conc", sep = "_")
   }
 
   # add new graph, regression parameter and nutrient values in EcoNumData
