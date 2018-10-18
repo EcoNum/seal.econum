@@ -16,8 +16,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-La laboratoire d'Ecologie numérique de l'Université de mons détient un autoanalyseur 
+La laboratoire d'Ecologie numérique de l'Université de mons a un autoanalyseur **seal AA3**
 L'autoanalyseur **seal AA3**
+
+
+```{r}
+aa3 <- readr::read_delim(file = "../inst/extra_data/181009A.TXT", 
+                            delim = ";",
+                            col_names = FALSE,
+                            col_types = readr::cols( .default = "c"),
+                            locale = readr::locale(encoding = "LATIN1")) # particulary
+knitr::kable(aa3[0:20, ], align = "c")
+```
 
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:

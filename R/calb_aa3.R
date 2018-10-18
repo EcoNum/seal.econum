@@ -12,6 +12,7 @@
 #' @importFrom tidyr gather
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
+#' @importFrom dplyr bind_rows
 #' @importFrom ggrepel geom_text_repel
 #' @export
 #'
@@ -137,9 +138,9 @@ calb_aa3 <- function(x){
   }
 
   # CALIBRATION list
-  bind_rows(calb_lm_list)  -> lm_tab
+  dplyr::bind_rows(calb_lm_list)  -> lm_tab
 
-  bind_rows(calb_db_list) -> calb_db
+  dplyr::bind_rows(calb_db_list) -> calb_db
 
   x[x$sample_type == "SAMP",] -> samp_df
 
