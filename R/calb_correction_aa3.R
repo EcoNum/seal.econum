@@ -57,7 +57,7 @@ calb_correction_aa3 <- function(aa3, filter_list) {
 
     aa3$calbdb[-rnum,] -> aa3$calbdb
 
-    aa3$calbdb[aa3$calbdb$std_type ==  type] -> calb
+    aa3$calbdb[aa3$calbdb$std_type ==  type,] -> calb
 
     ## calb_df[calb_df$std_type ==  type & !(calb_df$concentration %in% conc),] -> calb
 
