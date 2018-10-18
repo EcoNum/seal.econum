@@ -25,7 +25,7 @@ merge_sampdb_aa3 <- function(sampdb_org, sampdb_inorg) {
                "NO2_conc", "NO3_conc", "NH4_conc")
   nutrient_old = paste(nutrient, "old", sep = "_")
 
-  for (i in nutrient_new) {
+  for (i in nutrient_old) {
     if (i %in% c(names(sampdb_inorg), names(sampdb_org))) {
       nutrient <- c(nutrient, i)
     }

@@ -25,7 +25,13 @@ calb_correction_aa3 <- function(aa3, filter_list) {
     stop("class is not calb_aa3")
   }
 
-  calb_df <- aa3$calbdb
+  if (sum( !(attributes(aa3)[["names"]] ==
+             c("calbdb","regression","graph","sampdb")) ) != 0){
+    stop("not all element in the calb_aa3 object (calbdb, regression,
+         graph, sampdb)")
+  }
+
+  ## aa3$calbdb -> calb_df
 
   # Check_1 : names of list element
   nutrient_ctrl <- c("Ptot", "NO2", "NOx", "Ntot", "NH4", "PO4")
@@ -45,7 +51,15 @@ calb_correction_aa3 <- function(aa3, filter_list) {
     conc <- filter_list[[i]]
 
     # CALB DATA select
-    calb_df[calb_df$std_type ==  type & !(calb_df$concentration %in% conc),] -> calb
+
+    rnum <- which(aa3$calbdb$std_type ==  type &
+                    aa3$calbdb$concentration %in% conc)
+
+    aa3$calbdb[-rnum,] -> aa3$calbdb
+
+    aa3$calbdb[aa3$calbdb$std_type ==  type] -> calb
+
+    ## calb_df[calb_df$std_type ==  type & !(calb_df$concentration %in% conc),] -> calb
 
     # new linear model
     stats::lm(data = calb, formula = values ~ concentration ) -> lm_mod
