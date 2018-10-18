@@ -2,7 +2,7 @@
 % Please edit documentation in R/calb_correction_aa3.R
 \name{calb_correction_aa3}
 \alias{calb_correction_aa3}
-\title{Title}
+\title{calb_correction}
 \usage{
 calb_correction_aa3(aa3, filter_list)
 }
@@ -19,7 +19,7 @@ de calibration, un dataframe avec les parametres des regressions et
 un dataframe avec les donnees SAMP recalculee.
 }
 \description{
-Title
+calb_correction
 }
 \examples{
 # TO DO
