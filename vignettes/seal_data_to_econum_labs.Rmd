@@ -1,10 +1,10 @@
 ---
-title: "Analyse des données du seal"
-author: "Engels Guyliann & Raphael Conotte"
+title: "Importation, conversion, correction et analyse des données du seal aa3 du laboratoire d'econum"
+author: "Engels Guyliann"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analyse des données du seal}
+  %\VignetteIndexEntry{Importation, conversion, correction et analyse des données du seal aa3 du laboratoire d'econum}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-L'autoanalyseur **seal AA3** est 
+La laboratoire d'Ecologie numérique de l'Université de mons détient un autoanalyseur 
+L'autoanalyseur **seal AA3**
 
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:

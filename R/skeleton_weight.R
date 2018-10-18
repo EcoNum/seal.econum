@@ -17,7 +17,7 @@
 #' skeleton_weight(buoyant_weight = 25, S = 35, T = 25, P = 0, rho_aragonite = 2930)
 #'
 skeleton_weight <- function(buoyant_weight, S, T, P = 0, rho_aragonite = 2930){
-  x <- rho(S = S, T = T, P = P)
+  x <- seacarb::rho(S = S, T = T, P = P)
   y <- buoyant_weight / (1 - (x / rho_aragonite))
   y
 }

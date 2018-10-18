@@ -15,14 +15,19 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
 Imports:
-    magrittr,
     stats,
     seacarb,
-    readr,
     stringr,
     readxl,
+    readr,
+    magrittr,
     lubridate,
-    dplyr
+    ggrepel,
+    ggpubr,
+    flow,
+    ggplot2,
+    dplyr,
+    tidyr
 Suggests: 
     knitr,
     rmarkdown
