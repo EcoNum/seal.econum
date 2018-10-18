@@ -148,3 +148,6 @@ calb_corr <- calb_correction_aa3(aa3 = calb,
 
 Après avoir validé les différentes étapes on peut sauvegarder les données de calibration et les échantillons dans une autres. 
 
+## Compilation des données des deux méthodes
+
+Les prélèvements sont 
