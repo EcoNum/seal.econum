@@ -19,7 +19,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
   header_read <- readr::read_lines(file_aa3_txt, n_max = 13,
                                    locale = readr::locale(encoding = "LATIN1"))
   header <- stringr::str_extract_all(header_read,
-                                     "(-?µ?\\w+:?\\.?-?/?\\w*:?/?\\d*)")
+                                     "(-?\u03BC?\\w+:?\\.?-?/?\\w*:?/?\\d*)")
 
   # Rename list elements
   sapply(header, `[[`, 1) -> names(header)
@@ -104,7 +104,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
   # SAMP contient des valeurs manquantes
   for (i in which(raw_data$sample_type == "SAMP")) {
     if (is.na(raw_data$project[i]) == TRUE) {
-      stop("Attention : Presence de valeurs manquantes dans la colonnes project, le fichier xlsx et txt ne correspondent pas entièrement.")
+      stop("Attention : Presence de valeurs manquantes dans la colonnes project, le fichier xlsx et txt ne correspondent pas entierement.")
     }
   }
   attr(raw_data, "method") <- method
