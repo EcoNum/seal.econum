@@ -109,5 +109,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
   }
   attr(raw_data, "method") <- method
   attr(raw_data, "metadata") <- meta
+  raw_data <- as.data.frame(raw_data)
+  class(raw_data) <- c("aa3", "data.frame")
   return(raw_data)
 }
