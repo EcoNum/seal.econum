@@ -2,6 +2,23 @@
 
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 
-# Installation
+## Installation
 
-TOOD
+### Dernière version stable
+
+La dernière version stable du package **seal.econum** peut être installé depuis :
+
+TODO
+
+### Version en dévelopement
+
+Installez au préaliable le package  **remotes** :
+
+```r
+install.packages("remotes")
+```
+Employez la fonction `install_github()` pour installer le package **seal.econum** depuis github) :
+
+```r
+remotes::install_github("econum/seal.econum")
+```
