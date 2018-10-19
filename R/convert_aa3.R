@@ -16,6 +16,12 @@
 #'
 #' #TODO
 #'
+#'
+#'
+#'
+
+
+#'
 convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
   # Import metadata and extract informaation
   header_read <- readr::read_lines(file_aa3_txt, n_max = 13,
@@ -115,3 +121,5 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
   class(raw_data) <- c("aa3", "data.frame")
   return(raw_data)
 }
+
+

@@ -27,8 +27,11 @@ Imports:
     flow,
     ggplot2,
     dplyr,
-    tidyr
-Suggests: 
+    tidyr,
+    chart,
+    broom
+Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

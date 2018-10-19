@@ -162,3 +162,85 @@ attributes(merge)
 ```
 
 Après avoir suivi ces différentes étapes, le tableau de données obtenu peut être employé.
+
+
+# Amélioration de fonctions
+
+## idées 1 changer calb pour n'avoir que la visualisation 
+
+```{r}
+SciViews::R
+library(seal.econum)
+# importation de données exemples
+aa3_txt <- "../inst/extra_data/181018E.TXT"
+aa3_xlsx <- "../inst/extra_data/181018E.xlsx"
+# utilisation de la fonction d'importation et de conversion des données
+aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt, file_aa3_xlsx = aa3_xlsx)
+
+class(aa3_combine)
+```
+
+
+
+```{r}
+(names(aa3_combine)[str_detect(names(aa3_combine), pattern = "values")] -> a)
+(names(aa3_combine)[str_detect(names(aa3_combine), pattern = "std")] -> b)
+attr(x = aa3_combine, which = "metadata")$sample -> samp_name
+
+for(i in 1:length(a)){
+  
+   x <- chart(aa3_combine,
+            formula = as.formula(paste(a[i], "~",
+                                       "date_time%color=%sample_type%group=%1"))) +
+  geom_line() +
+  geom_point() +
+      theme(legend.direction = "horizontal", legend.position = "bottom") +
+      guides(col = guide_legend(title = "Sample",title.position = "top"))
+  
+  
+  # Filter data frame
+  aa3_combine %>.%
+    select(., a[i], b[i]) %>.%
+    na.omit(.) -> x1
+  
+  # lm
+  lm(x1, formula = as.formula(paste(a[i] ,"~", b[i]))) -> t1 
+  broom::tidy(t1) -> t2
+  broom::glance(t1) -> t3
+  t2$n <- length(x1[,1])
+  # Equation
+    eq <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2,
+                     list(a = format(t2$estimate[1], digits = 2),
+                          b = format(t2$estimate[2], digits = 2),
+                          r2 = format(t3$r.squared, digits = 3)))
+    eq <- as.character(as.expression(eq))
+  x3 <- chart(x1,
+            formula = x1[,1] ~ x1[,2]) +
+    geom_point() +
+    geom_smooth(method ="lm") +
+    labs( y = names(x1)[1], x = names(x1)[2]) +
+    geom_text(x = 2*(diff(range(x1[,2])))/5 , y = max(x1[,1]),
+                label = eq, parse = TRUE) +
+      ggrepel::geom_text_repel(aes(label = x1[,2]), nudge_y = 1.5,
+                               nudge_x = 1.5, direction = "both",
+                               segment.size = 0.2)
+  x4 <- chart::ggarrange(x, x3)
+  x5 <- ggpubr::annotate_figure(x4,
+                            top = ggpubr::text_grob(a[i], size =  14, face = "bold"),
+                            bottom = ggpubr::text_grob(paste0("Data source: ", samp_name),
+                                               color = "blue", hjust = 1,
+                                               x = 1, face = "italic",
+                                               size = 10))
+    
+  print(x5) 
+}
+
+```
+
+En ajoutant l'ensemble des éléments dans une liste, on obtient la fonction plot_aa3()
+
+
+
+Après avoir visualiser les deux graphiques, ainsi que le tableau de régression, la phase de validation débute.
+
+
