@@ -28,4 +28,5 @@ usethis::use_package("seacarb")
 usethis::use_package("stats")
 usethis::use_package("stringr")
 usethis::use_package("tidyr")
+usethis::use_package("SciViews")
 

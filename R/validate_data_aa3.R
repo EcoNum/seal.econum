@@ -13,9 +13,11 @@
 #'
 #' @import flow
 #' @import stringr
-#' @import stats
+#' @importFrom stats na.omit
+#' @importFrom stats lm
+#' @importFrom stats as.formula
 #' @import ggplot2
-#' @import chart
+#' @importFrom chart chart
 #' @import lubridate
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
@@ -98,7 +100,7 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
         stop("Attention seulement 3 points pour le calcul de la regression")
       }
 
-      lm(calb_data, formula = as.formula(paste(values[i] ,"~", std[i]))) -> lm_mod
+      stats::lm(calb_data, formula = stats::as.formula(paste(values[i] ,"~", std[i]))) -> lm_mod
       broom::tidy(lm_mod) -> lm_para
       broom::glance(lm_mod) -> lm_mod_stat
       lm_para$n <- sum(!is.na(calb_data[,4]))
@@ -115,7 +117,7 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
       eq <- as.character(as.expression(eq))
 
       chart::chart(calb_data,
-                   formula = as.formula(paste(values[i] ,"~", std[i])),
+                   formula = stats::as.formula(paste(values[i] ,"~", std[i])),
                    na.rm = TRUE) +
         geom_point(na.rm = TRUE) +
         geom_smooth(method = "lm", na.rm = TRUE) +
@@ -147,7 +149,7 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
       }
 
       # lm
-      lm(calb_data, formula = as.formula(paste(values[i] ,"~", std[i]))) -> lm_mod
+      stats::lm(calb_data, formula = stats::as.formula(paste(values[i] ,"~", std[i]))) -> lm_mod
       broom::tidy(lm_mod) -> lm_para
       broom::glance(lm_mod) -> lm_mod_stat
       lm_para$n <- sum(!is.na(calb_data[,4]))

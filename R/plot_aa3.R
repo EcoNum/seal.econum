@@ -8,7 +8,9 @@
 #' @export
 #' @import stringr
 #' @importFrom chart chart
-#' @import stats
+#' @importFrom stats na.omit
+#' @importFrom stats lm
+#' @importFrom stats as.formula
 #' @import ggplot2
 #' @importFrom  dplyr select
 #' @importFrom broom tidy
@@ -37,7 +39,7 @@ graph_aa3 <- list()
 
 for(i in 1:length(a)){
   x <- chart::chart(aa3_combine,
-             formula = as.formula(paste(a[i], "~",
+             formula = stats::as.formula(paste(a[i], "~",
                                         "date_time%color=%sample_type%group=%1"))) +
     geom_line() +
     geom_point() +
@@ -51,7 +53,7 @@ for(i in 1:length(a)){
     stats::na.omit(.) -> x1
 
   # lm
-  lm(x1, formula = as.formula(paste(a[i] ,"~", b[i]))) -> t1
+  stats::lm(x1, formula = stats::as.formula(paste(a[i] ,"~", b[i]))) -> t1
   broom::tidy(t1) -> t2
   broom::glance(t1) -> t3
   t2$n <- length(x1[,1])
