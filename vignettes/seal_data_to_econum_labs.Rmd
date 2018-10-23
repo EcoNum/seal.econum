@@ -239,6 +239,9 @@ for(i in 1:length(a)){
 
 En ajoutant l'ensemble des éléments dans une liste, on obtient la fonction plot_aa3()
 
+```{r}
+plot_aa3(aa3_combine)
+```
 
 
 Après avoir visualiser les deux graphiques, ainsi que le tableau de régression, la phase de validation débute.

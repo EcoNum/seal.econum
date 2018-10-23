@@ -1,8 +1,8 @@
-aa3_combine <- convert_aa3("../protocol_seal_aa3/data/raw/181018E.TXT", "../protocol_seal_aa3/data/raw/181018E.xlsx")
+#aa3_combine <- convert_aa3("../protocol_seal_aa3/data/raw/181018E.TXT", "../protocol_seal_aa3/data/raw/181018E.xlsx")
 
-filter_list <- list(Ptot = c(50, 25), Ntot = c(0.1, 0.5, 1), NO2 = 10)
+#filter_list <- list(Ptot = c(50, 25), Ntot = c(0.1, 0.5, 1), NO2 = 10)
 
-filter_l = list(Ntot = c(0.1, 0.5, 1, 2, 5))
+#filter_l = list(Ntot = c(0.1, 0.5, 1, 2, 5))
 
 validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
 
