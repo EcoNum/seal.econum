@@ -1,9 +1,34 @@
-aa3_combine <- convert_aa3("../protocol_seal_aa3/data/raw/181018E.TXT", "../protocol_seal_aa3/data/raw/181018E.xlsx")
-
-filter_list <- list(Ptot = c(50, 25), Ntot = c(0.1, 0.5, 1), NO2 = 10)
-
-filter_l = list(Ntot = c(0.1, 0.5, 1, 2, 5))
-
+#' Validate_data_aa3
+#'
+#' @param aa3_combine aa3 Data
+#' @param filter_list liste de concentration a supprimer pour recalculer
+#' la régression. ( ex : list(Ptot = c(1,2)) -> filter )
+#'
+#' @return Une liste contenant un dataframe avec les donnees CALB,
+#' une liste de dataframe avec les paramètres des regressions et
+#' un dataframe avec les donnees SAMP eventuellement recalculee. Affiche
+#' egalement les graphes des nouvelles courbes de calibration.
+#'
+#' @export
+#'
+#' @import flow
+#' @import stringr
+#' @import stats
+#' @import ggplot2
+#' @import chart
+#' @import lubridate
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
+#' @importFrom dplyr bind_rows
+#' @importFrom tidyr gather
+#' @importFrom broom tidy
+#' @importFrom broom glance
+#' @importFrom ggrepel geom_text_repel
+#'
+#' @examples
+#' #TODO
+#'
 validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
 
   # Check_1 : aa3 class
@@ -15,7 +40,7 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
   nutrient_ctrl <- c("Ptot", "NO2", "NOx", "Ntot", "NH4", "PO4")
 
   if ( !is.null(filter_list) ) {
-    if ( !(names(filter_list) %in% nutrient_ctrl) ) {
+    if ( sum(!(names(filter_list) %in% nutrient_ctrl)) != 0 ) {
       stop("Attention : pas de noms pour les elements de la liste ou pas de
            correspondance, utiliser un ou plusieurs des noms suivants :
            'Ptot', 'NO2', 'NOx', 'Ntot', 'NH4', 'PO4'")
@@ -24,28 +49,26 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
 
   # output list
   calb_db_list <- list()
-  # graph_lm <- list()
   lm_list <- list()
 
   #
-  (names(aa3_combine)[str_detect(names(aa3_combine),
+  (names(aa3_combine)[stringr::str_detect(names(aa3_combine),
                                  pattern = "values")] -> values)
-  (names(aa3_combine)[str_detect(names(aa3_combine),
+  (names(aa3_combine)[stringr::str_detect(names(aa3_combine),
                                  pattern = "std")] -> std)
-  (names(aa3_combine)[str_detect(names(aa3_combine),
+  (names(aa3_combine)[stringr::str_detect(names(aa3_combine),
                                  pattern = "conc")] -> conc)
   attr(aa3_combine, which = "metadata")$sample -> samp_name
-  # j = 1
 
   # SAMP data
-
   aa3_combine[aa3_combine$sample_type == "SAMP",] %>.%
-    mutate(., filename = attr(aa3_combine, which = "metadata")$sample) -> samp_df
+    dplyr::mutate(., filename = attr(aa3_combine,
+                                     which = "metadata")$sample) -> samp_db
 
-  paste(stringr::str_split(attr(aa3_combine, which = "metadata")$sample, pattern = "-")[[1]][2],
-        "filename", sep = "_") -> filename
+  paste(stringr::str_split(attr(aa3_combine, which = "metadata")$sample,
+                           pattern = "-")[[1]][2], "filename", sep = "_") -> filename
 
-  names(samp_df)[length(samp_df)] <- filename
+  names(samp_db)[length(samp_db)] <- filename
 
   # CALB DATA & Calc new conc
 
@@ -60,6 +83,11 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
 
       filter_num <- which(names(filter_list) ==
                             stringr::str_split(values[i], pattern = "_")[[1]][1])
+
+      # Check conc_list
+      if ( sum(!(filter_list[[filter_num]] %in% calb_data[[3]])) != 0 ){
+        stop("Attention : concentration non valide")
+      }
 
       calb_data[which(calb_data[[3]] %in% filter_list[[filter_num]]),
                 c(values[i], std[i])] <- NA
@@ -87,32 +115,29 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
       eq <- as.character(as.expression(eq))
 
       chart::chart(calb_data,
-                   formula = as.formula(paste(values[i] ,"~", std[i])), na.rm = TRUE) +
-        geom_point() +
-        geom_smooth(method = "lm") +
+                   formula = as.formula(paste(values[i] ,"~", std[i])),
+                   na.rm = TRUE) +
+        geom_point(na.rm = TRUE) +
+        geom_smooth(method = "lm", na.rm = TRUE) +
         ggtitle(stringr::str_split(values[i], pattern = "_")[[1]][1]) +
         geom_text(x = 2*(diff(range(calb_data[,3], na.rm = TRUE)))/5 ,
                   y = max(calb_data[,4], na.rm = TRUE),
                   label = eq, parse = TRUE) +
-        ggrepel::geom_text_repel(aes(label = calb_data[,3], na.rm = TRUE), nudge_y = 1.5,
-                                 nudge_x = 1.5, direction = "both",
+        ggrepel::geom_text_repel(aes(label = calb_data[,3]), na.rm = TRUE,
+                                 nudge_y = 1.5, nudge_x = 1.5, direction = "both",
                                  segment.size = 0.2) -> graphe
 
       print(graphe)
 
-      # graphe -> graph_lm[[j]]
-      # names(graph_lm)[j] <- paste(values[i])
-      # j+1 -> j
-
       # add new nutrient values
-      cnum <- which(names(samp_df) == conc[i])
-      names(samp_df)[cnum] <- paste(conc[i], "old", sep = "_")
-      samp_df %>.%
-        dplyr::mutate(., new = round((samp_df[,paste(values[i])] -
+      cnum <- which(names(samp_db) == conc[i])
+      names(samp_db)[cnum] <- paste(conc[i], "old", sep = "_")
+      samp_db %>.%
+        dplyr::mutate(., new = round((samp_db[,paste(values[i])] -
                                         lm_para$estimate[1]) /
-                                       lm_para$estimate[2],3)) -> samp_df
+                                       lm_para$estimate[2],3)) -> samp_db
 
-      names(samp_df)[length(samp_df)] <- paste(conc[i])
+      names(samp_db)[length(samp_db)] <- paste(conc[i])
 
 
     } else {
@@ -130,7 +155,6 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
       lm_list[[i]] <- list(param = lm_para, mod_stat = lm_mod_stat)
       names(lm_list)[i] <- paste(stringr::str_split(values[i],
                                                     pattern = "_")[[1]][1])
-
     }
 
     calb_data %>.%
@@ -156,36 +180,39 @@ validate_data_aa3 <- function(aa3_combine, filter_list = NULL) {
     calb_db %>.%
       dplyr::select(., id_cal, project_id, date, time, std_type, units_,
                     concentration, value) -> calb_db_list[[i]]
-
   }
 
-  calb_db <- bind_rows(calb_db_list)
+  calb_db <- dplyr::bind_rows(calb_db_list)
   calb_db %>.%
     dplyr::filter(., value != "NA") -> calb_db
 
-  # Identify all nutrient values
+  # Identify all nutrient values for select
   nutrient = sort(c(conc, values))
   nutrient_old = paste(nutrient, "old", sep = "_")
 
   for (i in nutrient_old) {
-    if (i %in% names(samp_df)) {
+    if (i %in% names(samp_db)) {
       nutrient <- c(nutrient, i)
     }
   }
 
-  samp_df %>.%
+  # select sampdb
+  samp_db %>.%
   dplyr::select(., sample_id, sample, sample_date, nutrient, project,
-                   filename, date_time, authors, comment) ->  samp_df
+                   filename, date_time, authors, comment) ->  samp_db
 
+  # valid_data list
   valid_data <- list(calb_db = calb_db,
                      regression = lm_list,
-                     samp_db = samp_df)
+                     samp_db = samp_db)
 
-  # if (!is.null(filter_list)) {
-  #   class(valid_data) <- c("valid_aa3", "filter_aa3", "aa3", "data.frame")
-  # } else {
-  #   class(valid_data) <- c("valid_aa3", "aa3", "data.frame")
-  # }
+  # attributes
+
+  attr(valid_data$calb_db, "filter") <- filter_list
+
+  attr(valid_data$samp_db, "filter") <- filter_list
+
+  attr(valid_data$samp_db, "regression") <- lm_list
 
   return(valid_data)
 
