@@ -35,7 +35,7 @@ merge_sampdb_aa3 <- function(sampdb_org, sampdb_inorg) {
 
   # JOIN sampdb_org and sampdb_inorg
   sampdb_org %>.%
-    dplyr::left_join(., sampdb_inorg, by = "sample_id") %>.%
+    dplyr::left_join(., sampdb_inorg, by = "sample_id", suffix = c(".x", ".y")) %>.%
     # Calcul NO3_conc
     dplyr::mutate(., NO3_conc = NOx_conc - NO2_conc,
            calb_orga_date = lubridate::date(date_time.x),

@@ -29,9 +29,11 @@ Imports:
     dplyr,
     tidyr,
     chart,
-    broom
+    broom,
+    SciViews
 Suggests:
     knitr,
     rmarkdown,
     testthat
+Remotes: SciViews/flow, SciViews/chart, SciViews/SciViews
 VignetteBuilder: knitr
