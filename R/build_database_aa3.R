@@ -2,8 +2,10 @@
 #'
 #' @param aa3_combine aa3 Data
 #'
-#' @return 2 data frame constitués des données de calibration dans le premier et
-#' des données pour les échantillons dans le second.
+#' @return 3 data frame constitues des donnees de calibration dans le premier,
+#' des donnees pour les echantillons dans le deuxieme et des metadonnees pour
+#' le dernier.
+#'
 #' @export
 #'
 #' @import lubridate
@@ -95,7 +97,8 @@ build_db_aa3 <- function(aa3_combine){
                                      which = "metadata")$sample) -> samp_db
 
   paste(stringr::str_split(attr(aa3_combine, which = "metadata")$sample,
-                           pattern = "-")[[1]][2], "filename", sep = "_") -> filename
+                           pattern = "-")[[1]][2],
+        "filename", sep = "_") -> filename
 
   names(samp_db)[length(samp_db)] <- filename
 
@@ -124,14 +127,14 @@ build_db_aa3 <- function(aa3_combine){
   if ("lm_df" %in% names(attribute_list)) {
     data.frame(attribute_list$metadata, method = attribute_list$method,
                lm = attribute_list$lm_df) %>.%
-      dplyr::mutate(., id = paste(rownames(.), sample, sep = "_")) -> info_db
+      dplyr::mutate(., id = paste(method.method, sample, sep = "_")) -> info_db
   } else {
     data.frame(attribute_list$metadata, method = attribute_list$method) %>.%
-      dplyr::mutate(., id = paste(rownames(.), sample, sep = "_")) -> info_db
+      dplyr::mutate(., id = paste(method.method, sample, sep = "_")) -> info_db
   }
 
   # RETURN
   database <- list(calb_db = calb_db, samp_db = samp_db, info_db = info_db)
   return(database)
 
-  }
+}

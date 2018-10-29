@@ -13,11 +13,10 @@
 #' @export
 #'
 #' @examples
-#'
-#' #TODO
-#'
-#'
-#'
+#' # convert_aa3("inst/extra_data/181018E.TXT",
+#' # "inst/extra_data/181018E.xlsx") -> aa3_combine
+#' # head(aa3_combine)
+#' # attributes(aa3_combine)
 #'
 
 
@@ -72,16 +71,19 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
                             gain = header$Gain[i],
                             lamp = header$Lamp[i])
   }
-  names(method) <- c("channel_1","channel_2","channel_3")
+
+  bind_rows(method) %>.%
+    as.data.frame(.) -> method
+  row.names(method) <- c("channel_1", "channel_2", "channel_3")
 
   # Create a list with the meta information
-  meta <- list(sample = paste(sub("\\.RUN$", "", header$RUN[2]),
-                              header$ANAL[2],sep = "-"),
-               sample_date = lubridate::dmy_hms(paste(header$DATE[2],
-                                                      header$TIME[2])),
-               author = header$OPER[2],
-               date = lubridate::dmy(header$DATE[2]),
-               comment = header$COMM[2])
+  meta <- data.frame(sample = paste(sub("\\.RUN$", "", header$RUN[2]),
+                                    header$ANAL[2],sep = "-"),
+                     sample_date = lubridate::dmy_hms(paste(header$DATE[2],
+                                                            header$TIME[2])),
+                     author = header$OPER[2],
+                     date = lubridate::dmy(header$DATE[2]),
+                     comment = header$COMM[2])
 
   # Extract raw data
   raw_data <- readr::read_delim(file = file_aa3_txt, delim = ";", skip = 13)
@@ -100,8 +102,8 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
 
   # Add units informations
   for (i in 1:3) {
-    attr(raw_data[[stds[i]]], "units") <- method[[i]]$unit
-    attr(raw_data[[concs[i]]], "units") <- method[[i]]$unit
+    attr(raw_data[[stds[i]]], "units") <- method$unit[[i]]
+    attr(raw_data[[concs[i]]], "units") <- method$unit[[i]]
   }
 
   # import xlsx file

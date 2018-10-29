@@ -16,7 +16,9 @@
 #' @importFrom dplyr select
 #'
 #' @examples
-#' # TO DO
+#' # load("~/shared/projects/seal.econum/data/samp_inorga.rda")
+#' # load("~/shared/projects/seal.econum/data/samp_orga.rda")
+#' # merge_sampdb_aa3(samp_orga, samp_inorga)
 #'
 merge_sampdb_aa3 <- function(sampdb_org, sampdb_inorg) {
 

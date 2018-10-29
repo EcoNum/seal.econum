@@ -2,7 +2,7 @@
 #'
 #' @param aa3_combine aa3 Data
 #' @param filter_list liste de concentration a supprimer pour recalculer
-#' la régression. ( ex : list(Ptot = c(1,2)) -> filter )
+#' la regression. ( ex : list(Ptot = c(1,2)) -> filter )
 #'
 #' @return un dataframe
 #' @export
