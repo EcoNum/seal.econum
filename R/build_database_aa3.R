@@ -84,7 +84,7 @@ build_db_aa3 <- function(aa3_combine){
     dplyr::filter(., value != "NA") -> calb_db
 
   # Attributes calb_db
-  attr(calb_db, "class") <- c("aa3", "data.frame")
+  attr(calb_db, "class") <- "data.frame"
   attr(calb_db, "method") <- attribute_list$method
   attr(calb_db, "metadata") <- attribute_list$metadata
   attr(calb_db, "lm_df") <- attribute_list$lm_df
@@ -118,7 +118,7 @@ build_db_aa3 <- function(aa3_combine){
                   filename, date_time, authors, comment) ->  samp_db
 
   # attributes samp_db
-  attr(samp_db, "class") <- c("aa3", "data.frame")
+  attr(samp_db, "class") <- "data.frame"
   attr(samp_db, "method") <- attribute_list$method
   attr(samp_db, "metadata") <- attribute_list$metadata
   attr(samp_db, "lm_df") <- attribute_list$lm_df
