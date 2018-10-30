@@ -4,12 +4,16 @@
 \alias{convert_aa3}
 \title{Conversion of aa3 file txt and excell}
 \usage{
-convert_aa3(file_aa3_txt, file_aa3_xlsx)
+convert_aa3(file_aa3_txt, file_aa3_xlsx, project, topic = NULL)
 }
 \arguments{
 \item{file_aa3_txt}{txt file}
 
 \item{file_aa3_xlsx}{xlsx file}
+
+\item{project}{name of project}
+
+\item{topic}{particulary information on the project}
 }
 \value{
 un objet converti
@@ -22,6 +26,5 @@ Conversion du fichier fourni par l autoanalysuer seal AA3 au format txt  a l aid
 # "inst/extra_data/181018E.xlsx") -> aa3_combine
 # head(aa3_combine)
 # attributes(aa3_combine)
-
 
 }

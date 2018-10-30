@@ -4,6 +4,8 @@
 #'
 #' @param file_aa3_txt txt file
 #' @param file_aa3_xlsx xlsx file
+#' @param project name of project
+#' @param topic particulary information on the project
 #'
 #' @return un objet converti
 #' @import stringr
@@ -19,9 +21,7 @@
 #' # attributes(aa3_combine)
 #'
 
-
-#'
-convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
+convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL){
   # Import metadata and extract informaation
   header_read <- readr::read_lines(file_aa3_txt, n_max = 13,
                                    locale = readr::locale(encoding = "LATIN1"))
@@ -77,13 +77,15 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
   row.names(method) <- c("channel_1", "channel_2", "channel_3")
 
   # Create a list with the meta information
-  meta <- data.frame(sample = paste(sub("\\.RUN$", "", header$RUN[2]),
+  meta <- list(sample = paste(sub("\\.RUN$", "", header$RUN[2]),
                                     header$ANAL[2],sep = "-"),
+                     project = project,
                      sample_date = lubridate::dmy_hms(paste(header$DATE[2],
                                                             header$TIME[2])),
                      author = header$OPER[2],
                      date = lubridate::dmy(header$DATE[2]),
-                     comment = header$COMM[2])
+                     comment = header$COMM[2],
+               topic = topic)
 
   # Extract raw data
   raw_data <- readr::read_delim(file = file_aa3_txt, delim = ";", skip = 13)
@@ -117,6 +119,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx){
       stop("Attention : Presence de valeurs manquantes dans la colonnes project, le fichier xlsx et txt ne correspondent pas entierement.")
     }
   }
+
   attr(raw_data, "method") <- method
   attr(raw_data, "metadata") <- meta
   raw_data <- as.data.frame(raw_data)

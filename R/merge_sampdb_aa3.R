@@ -11,6 +11,7 @@
 #'
 #' @import lubridate
 #' @import stringr
+#' @import magrittr
 #' @importFrom dplyr left_join
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
@@ -36,13 +37,13 @@ merge_sampdb_aa3 <- function(sampdb_org, sampdb_inorg) {
   sort(nutrient) -> nutrient
 
   # JOIN sampdb_org and sampdb_inorg
-  sampdb_org %>.%
-    dplyr::left_join(., sampdb_inorg, by = "sample_id", suffix = c(".x", ".y")) %>.%
+  sampdb_org %>%
+    dplyr::left_join(sampdb_inorg, by = "sample_id", suffix = c(".x", ".y")) %>%
     # Calcul NO3_conc
-    dplyr::mutate(., NO3_conc = NOx_conc - NO2_conc,
+    dplyr::mutate( NO3_conc = NOx_conc - NO2_conc,
            calb_orga_date = lubridate::date(date_time.x),
-           calb_inorga_date = lubridate::date(date_time.y)) %>.%
-    dplyr::select(., sample.x, sample_date.x, nutrient, sample_id, project.x,
+           calb_inorga_date = lubridate::date(date_time.y)) %>%
+    dplyr::select( sample.x, sample_date.x, nutrient, sample_id, project.x,
            calb_orga_date, orga_filename, calb_inorga_date,
            inorga_filename, authors.x, comment.x) -> samp_org_inorg
 

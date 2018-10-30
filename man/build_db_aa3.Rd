@@ -21,7 +21,7 @@ Build database
 # convert_aa3("inst/extra_data/181018E.TXT",
 # "inst/extra_data/181018E.xlsx") -> aa3_combine
 # plot_aa3(aa3_combine)
-# new_calb_aa3(aa3_combine, filter = list(Ptot = c(50,25), Ntot = c(0.1, 0.5)))
+# calb_aa3(aa3_combine, filter = list(Ptot = c(50,25), Ntot = c(0.1, 0.5)))
 # build_db_aa3(aa3_combine)
 
 }

@@ -22,9 +22,9 @@
 #' # aa3_combine <- convert_aa3("inst/extra_data/181018E.TXT", "inst/extra_data/181018E.xlsx")
 #' # filter_list <- list(Ptot =  c(50, 25), Ntot = c(0.1, 0.5, 1, 2))
 #' # plot_aa3(aa3_combine)
-#' # new_calb_aa3(aa3_combine, filter_list)
+#' # calb_aa3(aa3_combine, filter_list)
 #'
-new_calb_aa3 <- function(aa3_combine, filter_list) {
+calb_aa3 <- function(aa3_combine, filter_list) {
 
   # Check_1 : aa3 class
   if ( !("aa3" %in% class(aa3_combine)) ) {
@@ -58,7 +58,7 @@ new_calb_aa3 <- function(aa3_combine, filter_list) {
 
   # unit vect
   unit_v <- stringr::str_detect(attr(aa3_combine, which = "method")$unit,
-                                   "µmol/L")
+                                   "\u03BCmol/L")
   unit_vect <- c()
   unit_vect[unit_v] <- "\u03BCmol/L"
   unit_vect[!unit_v] <- attr(aa3_combine, which = "method")$unit[!unit_v]
@@ -176,7 +176,6 @@ new_calb_aa3 <- function(aa3_combine, filter_list) {
   attr(aa3_combine, "lm_df") <- lm_df
 
   return(aa3_combine)
-
 }
 
 

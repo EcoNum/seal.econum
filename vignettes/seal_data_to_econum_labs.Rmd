@@ -42,6 +42,9 @@ L'instrument utilise deux méthodes pour analyser les différents composés ci-d
 Le seal AA3 renvoit des fichiers au format texte comme le montre le tableau ci-dessous. Le nom des fichier est toujours la date inversée suivi d'une lettre (ex : 181009A, concernne une analyse fait le 9 octobre 2018).
 
 ```{r}
+#load several packages 
+SciViews::R
+
 aa3_txt <- "../inst/extra_data/181009A.TXT"
 
 aa3 <- readr::read_delim(file = aa3_txt, 
@@ -49,21 +52,21 @@ aa3 <- readr::read_delim(file = aa3_txt,
                             col_names = FALSE,
                             col_types = readr::cols( .default = "c"),
                             locale = readr::locale(encoding = "LATIN1")) # particulary
-knitr::kable(aa3[c(0:18, 22:25, 29:33), ], align = "c", caption = "Extrait d'un tableau de données fourni par le seal AA3")
+rmarkdown::paged_table(aa3)
 ```
 
-Ce fichier peut être divisé en deux parties distinctes. La première a pour but de fournir un ensemble de métadonnées sur l'anlyse et la seconde partie renvoit un tableau de données sur les échantillons analysés (courbe de calibration et échantillons de lié à une expérience).
+Ce fichier peut être divisé en deux parties distinctes. La première a pour but de fournir un ensemble de métadonnées sur l'anlyse et la seconde partie renvoit un tableau de données sur les échantillons analysés (courbe de calibration et échantillons liés à une expérience).
 
 Le préambule de ce document contient des informations importantes que l’on ne peut dissocier du tableau de données afin de comprendre les résultats.
 
 ```{r}
-knitr::kable(aa3[0:13, ], align = "c", caption = "Extrait d'un tableau de données fourni par le seal AA3")
+rmarkdown::paged_table(aa3[0:13, ])
 ```
 
 La seconde partie du document comprend les échantillons analysés aussi bien de calibrations que les échantillons liés à l'expérience. 
 
 ```{r}
-knitr::kable(aa3[14:25, ], align = "c", caption = "Extrait d'un tableau de données fourni par le seal AA3")
+rmarkdown::paged_table(aa3[14:25, ])
 ```
 
 Malgré le préambule et le tableau de données des informations essentielles sont manquantes. Pour annoter l’échantillon qui est dosé par l’instrument, on peut encoder uniquement ces références dans la colonnes Sample ID. Le nombre de caractères encodables est limité.
@@ -88,8 +91,8 @@ library(seal.econum)
 aa3_txt <- "../inst/extra_data/181009A.TXT"
 aa3_xlsx <- "../inst/extra_data/181009A.xlsx"
 # utilisation de la fonction d'importation et de conversion des données
-aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt, file_aa3_xlsx = aa3_xlsx)
-knitr::kable(aa3_combine)
+aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt, file_aa3_xlsx = aa3_xlsx, project =  "project_test")
+rmarkdown::paged_table(aa3_combine)
 ```
 
 Ce tableau de données comprend un ensemble d'attribus lié aux métadonnées du fichier au format txt.
@@ -104,143 +107,53 @@ Une fois les données encodées, une phase de validation de ces dernières est i
 
 ## Validation de la calibration
 
-### Visualisation des calibrations
+### Visualisation 
 
-La fonction calb_aa3 n'utilise qu'un seul argument, l'objet formé suite à la conversion des données de l'autoanalyseur. Ce dernier a pour classe aa3 et cette classe est employé afin de n'accepter que ce type de fichier.
-
-L'objet calb est une liste qui comprend 4 éléments différents. La classe de ce nouvelle objet est calb_aa3. 
+La première phase de validation débute par la visualisation des données et des droites de calibration associés. 
 
 
-Au sein de cette liste, **calbdb** comprend les données de lié à la calibration. Le formatage de ces données ont pour vocation d'être facilement enregistré sur une base de données ou en local dans un fichier de données. **regression** est un tableau de données résumant les valeurs importantes des régressions linéaires. **graph** comprend les graphiques lié au analyses ainsi que les graphiques liées aux régressions linéaires réalisées pour déterminer les concentrations des molécules. **sampdb** contient les échantillons liés uniquement à l'expérience. Après validation, ces données seront les seules à exploiter.
-
+```{r}
+plot_aa3(aa3_combine = aa3_combine)
+```
 
 
 ## Correction des données de calibration
 
 Les données de calibration peuvent être eronée. Pour ce faire, la fonction calb_correction_aa3() a été mise au point. L'objet obtenu ressemble fortement à celui proposé par la fonction **calb_aa3**. Cette fonction requiert un objet de type calb_aa3. L'argument permettant de corriger plusieurs courbe de calibration en une seule fonction est **filter_list**
 
+```{r}
+calb_aa3 <- calb_aa3(aa3_combine = aa3_combine, filter_list = list(PO4 = 10, NH4 = c(0.1, 0.5)))
+```
+
+```{r}
+attributes(calb_aa3)
+```
+
+```{r}
+attr(calb_aa3, "lm_df")$filter_conc
+```
+```{r}
+#econum::new_econum_data(x = calb_aa3, metadata = attr(calb_aa3, "metadata"), class = "aa3")
+#repos function
+```
+
+
+```{r}
+valid <- build_db_aa3(aa3_combine = calb_aa3)
+```
+
+```{r}
+valid$samp_db
+```
 
 
 # Sauvegarde des données 
 
-Les données après la phase de validation sont sauvegardé. Actuellement, ces dernières sont sauvé en 4 fichiers au format rds. avec la fonction **saveRDS()**.
 
-L'un des prochains objectif est de pouvoir envoyer ces données dans une base de données dédiés à cet effet.
 
 # Compilation des données des deux méthodes
 
-Les deux méthodes d'analyses des échantillons proposé par l'autoanalyseur **seal AA3** se font en deux batchs distincst avec des paramètres et des solvants différents. Il y a donc un décalage dans le temps. De ce fait apès avoir réalisé l'importation, la validation et la sauvegarde des données, une étape de récupération des données est indispensable. Actuellement, la fonction readRDS() est employé suivi d'un filtre afin de ne garder que le projet lié à l'expérience analysée. 
-
 ```{r}
-data("samp_inorga")
-data("samp_orga")
-```
-
-Les deux fichiers filtrées sont à combiner avec la fonction **merge_sampdb_aa3()**.  Cette fonction combine les données et calcule la concentration en nitrate qui provient du calcule suivant :
-
-$NO_X - NO_2 = NO_3$
-
-```{r}
-(merge <- merge_sampdb_aa3(sampdb_org = samp_orga, sampdb_inorg = samp_inorga))
-```
-
-```{r}
-attributes(merge)
-```
-
-Après avoir suivi ces différentes étapes, le tableau de données obtenu peut être employé.
-
-# Amélioration de fonctions
-
-## idées 1 changer calb pour n'avoir que la visualisation 
-
-```{r}
-SciViews::R
-library(seal.econum)
-# import raw data and the supplement file  (xlsx format) 
-aa3_txt <- "../inst/extra_data/181018E.TXT"
-aa3_xlsx <- "../inst/extra_data/181018E.xlsx"
-# use the function to import and convert data
-aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt,
-                           file_aa3_xlsx = aa3_xlsx)
-# others informations
-class(aa3_combine)
-attributes(aa3_combine)
-```
-
-
-```{r}
-(names(aa3_combine)[str_detect(names(aa3_combine), pattern = "values")] -> a)
-(names(aa3_combine)[str_detect(names(aa3_combine), pattern = "std")] -> b)
-attr(x = aa3_combine, which = "metadata")$sample -> samp_name
-
-for(i in 1:length(a)){
-  
-   x <- chart(aa3_combine,
-            formula = as.formula(paste(a[i], "~",
-                                       "date_time%color=%sample_type%group=%1"))) +
-  geom_line() +
-  geom_point() +
-      theme(legend.direction = "horizontal", legend.position = "bottom") +
-      guides(col = guide_legend(title = "Sample",title.position = "top"))
-  
-  
-  # Filter data frame
-  aa3_combine %>.%
-    select(., a[i], b[i]) %>.%
-    na.omit(.) -> x1
-  
-  # lm
-  lm(x1, formula = as.formula(paste(a[i] ,"~", b[i]))) -> t1 
-  broom::tidy(t1) -> t2
-  broom::glance(t1) -> t3
-  t2$n <- length(x1[,1])
-  # Equation
-    eq <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2,
-                     list(a = format(t2$estimate[1], digits = 2),
-                          b = format(t2$estimate[2], digits = 2),
-                          r2 = format(t3$r.squared, digits = 3)))
-    eq <- as.character(as.expression(eq))
-  x3 <- chart(x1,
-            formula = x1[,1] ~ x1[,2]) +
-    geom_point() +
-    geom_smooth(method ="lm") +
-    labs( y = names(x1)[1], x = names(x1)[2]) +
-    geom_text(x = 2*(diff(range(x1[,2])))/5 , y = max(x1[,1]),
-                label = eq, parse = TRUE) +
-      ggrepel::geom_text_repel(aes(label = x1[,2]), nudge_y = 1.5,
-                               nudge_x = 1.5, direction = "both",
-                               segment.size = 0.2)
-  x4 <- chart::ggarrange(x, x3)
-  x5 <- ggpubr::annotate_figure(x4,
-                            top = ggpubr::text_grob(a[i], size =  14, face = "bold"),
-                            bottom = ggpubr::text_grob(paste0("Data source: ", samp_name),
-                                               color = "blue", hjust = 1,
-                                               x = 1, face = "italic",
-                                               size = 10))
-    
-  print(x5) 
-}
-
-```
-
-En ajoutant l'ensemble des éléments dans une liste, on obtient la fonction plot_aa3()
-
-```{r}
-plot_aa3(aa3_combine)
-```
-
-Après avoir visualiser les deux graphiques, ainsi que le tableau de régression, la phase de validation débute.
-
-On décide sur base de la gamme de concentrations de nos échantillons de recalculer les droites de calibration. 
-
-```{r}
-# vali <- validate_data_aa3(aa3_combine, filter_list = list(Ptot = c(25, 50), Ntot = c(0.1, 0.5, 1, 2), NO2 = 10))
-```
-
-```{r}
-# vali
-# attributes(vali)
-# #vali$regression$NO2$param
+#merge file TODO
 ```
 

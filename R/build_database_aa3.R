@@ -22,7 +22,7 @@
 #' # convert_aa3("inst/extra_data/181018E.TXT",
 #' # "inst/extra_data/181018E.xlsx") -> aa3_combine
 #' # plot_aa3(aa3_combine)
-#' # new_calb_aa3(aa3_combine, filter = list(Ptot = c(50,25), Ntot = c(0.1, 0.5)))
+#' # calb_aa3(aa3_combine, filter = list(Ptot = c(50,25), Ntot = c(0.1, 0.5)))
 #' # build_db_aa3(aa3_combine)
 #'
 build_db_aa3 <- function(aa3_combine){
@@ -123,18 +123,18 @@ build_db_aa3 <- function(aa3_combine){
   attr(samp_db, "metadata") <- attribute_list$metadata
   attr(samp_db, "lm_df") <- attribute_list$lm_df
 
-  # INFO
-  if ("lm_df" %in% names(attribute_list)) {
-    data.frame(attribute_list$metadata, method = attribute_list$method,
-               lm = attribute_list$lm_df) %>.%
-      dplyr::mutate(., id = paste(method.method, sample, sep = "_")) -> info_db
-  } else {
-    data.frame(attribute_list$metadata, method = attribute_list$method) %>.%
-      dplyr::mutate(., id = paste(method.method, sample, sep = "_")) -> info_db
-  }
+  # # INFO
+  # if ("lm_df" %in% names(attribute_list)) {
+     # data.frame(attribute_list$metadata, method = attribute_list$method,
+     #            lm = attribute_list$lm_df) %>.%
+     #   dplyr::mutate(., id = paste(method.method, sample, sep = "_")) -> info_db
+  # } else {
+  #   data.frame(attribute_list$metadata, method = attribute_list$method) %>.%
+  #     dplyr::mutate(., id = paste(method.method, sample, sep = "_")) -> info_db
+  # }
 
   # RETURN
-  database <- list(calb_db = calb_db, samp_db = samp_db, info_db = info_db)
+  database <- list(calb_db = calb_db, samp_db = samp_db)
   return(database)
 
 }
