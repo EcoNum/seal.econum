@@ -30,10 +30,11 @@ Imports:
     tidyr,
     chart,
     broom,
-    SciViews
+    SciViews,
+    econum
 Suggests:
     knitr,
     rmarkdown,
     testthat
-Remotes: SciViews/flow, SciViews/chart, SciViews/SciViews
+Remotes: SciViews/flow, SciViews/chart, SciViews/SciViews, EcoNum/econum
 VignetteBuilder: knitr
