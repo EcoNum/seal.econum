@@ -20,6 +20,8 @@ inorganiques ("Ptot_conc", "Ntot_conc", "PO4_conc", "NOx_conc", "NO2_conc",
 merge_sampdb_aa3
 }
 \examples{
-# TO DO
+# load("~/shared/projects/seal.econum/data/samp_inorga.rda")
+# load("~/shared/projects/seal.econum/data/samp_orga.rda")
+# merge_sampdb_aa3(samp_orga, samp_inorga)
 
 }

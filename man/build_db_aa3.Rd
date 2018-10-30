@@ -10,8 +10,9 @@ build_db_aa3(aa3_combine)
 \item{aa3_combine}{aa3 Data}
 }
 \value{
-2 data frame constitués des données de calibration dans le premier et
-des données pour les échantillons dans le second.
+3 data frame constitues des donnees de calibration dans le premier,
+des donnees pour les echantillons dans le deuxieme et des metadonnees pour
+le dernier.
 }
 \description{
 Build database

@@ -1,25 +1,42 @@
-# seal.econum : Importation, validation et analyse des données du seal AA3 du laboratoire d'écologie numérique des milieux aquatiques.
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+seal.econum - import, validate and analyse seal AA3 data file
+=============================================================
 
-[![Travis-CI Build Status](https://travis-ci.org/EcoNum/seal.econum.svg?branch=master)](https://travis-ci.org/EcoNum/seal.econum)
-[![License](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
+Guyliann Engels & Raphael Conotte
+---------------------------------
 
-## Installation
+[![Travis-CI Build Status](https://travis-ci.org/EcoNum/seal.econum.svg?branch=master)](https://travis-ci.org/EcoNum/seal.econum) [![License](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 
-### Dernière version stable
+Overview
+--------
 
-La dernière version stable du package **seal.econum** peut être installé depuis :
+seal.econum includes several functions to import, validate and analyse seal AA3 data file.
+
+Installation
+------------
+
+### Latest stable version
+
+The latest stable version of seal.econum can simply be installed from github with the last releases :
+
+``` r
+# TODO
+```
+
+### Development version
+
+Use install\_github() to install the seal.econum package from Github (source from master branch will be recompiled on your machine):
+
+``` r
+# install.packages("remotes")
+remotes::install_github("econum/seal.econum", build_vignettes = TRUE)
+```
+
+### Usage
 
 TODO
 
-### Version en dévelopement
+Getting help
+------------
 
-Installez au préaliable le package  **remotes** :
-
-```r
-install.packages("remotes")
-```
-Employez la fonction `install_github()` pour installer le package **seal.econum** depuis github) :
-
-```r
-remotes::install_github("econum/seal.econum")
-```
+If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/econum/seal.econum/issues).

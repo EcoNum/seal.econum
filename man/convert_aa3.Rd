@@ -18,11 +18,10 @@ un objet converti
 Conversion du fichier fourni par l autoanalysuer seal AA3 au format txt  a l aide d un fichier complementaire au format xlsx
 }
 \examples{
-
-#TODO
-
-
-
+# convert_aa3("inst/extra_data/181018E.TXT",
+# "inst/extra_data/181018E.xlsx") -> aa3_combine
+# head(aa3_combine)
+# attributes(aa3_combine)
 
 
 }

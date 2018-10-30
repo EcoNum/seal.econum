@@ -10,7 +10,7 @@ new_calb_aa3(aa3_combine, filter_list)
 \item{aa3_combine}{aa3 Data}
 
 \item{filter_list}{liste de concentration a supprimer pour recalculer
-la régression. ( ex : list(Ptot = c(1,2)) -> filter )}
+la regression. ( ex : list(Ptot = c(1,2)) -> filter )}
 }
 \value{
 un dataframe

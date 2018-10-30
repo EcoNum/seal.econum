@@ -3,5 +3,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.md
+README.Rmd
 LICENSE
 ^\.travis\.yml$
