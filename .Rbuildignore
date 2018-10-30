@@ -4,5 +4,6 @@
 ^\.Rproj\.user$
 README.md
 README.Rmd
+NEWS.md
 LICENSE
 ^\.travis\.yml$
