@@ -1,6 +1,6 @@
 #' plot aa3 file
 #'
-#' @param aa3_combine aa3 data
+#' @param obj aa3 object
 #'
 #' @return Une liste contenant un dataframe avec les donnees CALB,
 #' les graphes de controle pour la calibration, un dataframe avec les parametres
@@ -24,21 +24,18 @@
 #' @examples
 #' #TODO
 #'
-plot_aa3 <- function(aa3_combine){
 
-  if ( !("aa3" %in% class(aa3_combine)) ){
-    stop("class is not aa3")
-  }
+plot.aa3 <- function(obj){
 
-(names(aa3_combine)[str_detect(names(aa3_combine), pattern = "values")] -> a)
-(names(aa3_combine)[str_detect(names(aa3_combine), pattern = "std")] -> b)
-attr(x = aa3_combine, which = "metadata")$sample -> samp_name
+(names(obj)[str_detect(names(obj), pattern = "values")] -> a)
+(names(obj)[str_detect(names(obj), pattern = "std")] -> b)
+attr(x = obj, which = "metadata")$sample -> samp_name
 
 # create a list
 graph_aa3 <- list()
 
 for(i in 1:length(a)){
-  x <- chart::chart(aa3_combine,
+  x <- chart::chart(obj,
              formula = stats::as.formula(paste(a[i], "~",
                                         "date_time%color=%sample_type%group=%1"))) +
     geom_line() +
@@ -46,27 +43,22 @@ for(i in 1:length(a)){
     theme(legend.direction = "horizontal", legend.position = "bottom") +
     guides(col = guide_legend(title = "Sample",title.position = "top"))
 
-
   # Filter data frame
-  aa3_combine %>.%
+  obj %>.%
     dplyr::select(., a[i], b[i]) %>.%
     stats::na.omit(.) -> x1
 
-  # lm
-  stats::lm(x1, formula = stats::as.formula(paste(a[i] ,"~", b[i]))) -> t1
-  broom::tidy(t1) -> t2
-  broom::glance(t1) -> t3
-  t2$n <- length(x1[,1])
   # Equation
+  attr(obj, "calb_lm") -> calb_lm
   eq <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2,
-                   list(a = format(t2$estimate[1], digits = 2),
-                        b = format(t2$estimate[2], digits = 2),
-                        r2 = format(t3$r.squared, digits = 3)))
+                   list(a = format(calb_lm$intercept[i], digits = 2),
+                        b = format(calb_lm$values[i], digits = 2),
+                        r2 = format(calb_lm$r_squared[i], digits = 3)))
   eq <- as.character(as.expression(eq))
   x3 <- chart::chart(x1,
               formula = x1[,1] ~ x1[,2]) +
     geom_point() +
-    geom_smooth(method ="lm") +
+    geom_abline(intercept = calb_lm$intercept[i], slope = calb_lm$values[i]) +
     labs( y = names(x1)[1], x = names(x1)[2]) +
     geom_text(x = 2*(diff(range(x1[,2])))/5 , y = max(x1[,1]),
               label = eq, parse = TRUE) +
