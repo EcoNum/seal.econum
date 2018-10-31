@@ -21,6 +21,10 @@
 #' # attributes(aa3_combine)
 #'
 
+"inst/extra_data/181018E.TXT" -> file_aa3_txt
+"inst/extra_data/181018E.xlsx" -> file_aa3_xlsx
+project <- "test"
+topic <- NULL
 convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL){
   # Import metadata and extract informaation
   header_read <- readr::read_lines(file_aa3_txt, n_max = 13,
@@ -84,8 +88,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL){
                                                             header$TIME[2])),
                      author = header$OPER[2],
                      date = lubridate::dmy(header$DATE[2]),
-                     comment = header$COMM[2],
-               topic = topic)
+                     comment = header$COMM[2], topic = topic)
 
   # Extract raw data
   raw_data <- readr::read_delim(file = file_aa3_txt, delim = ";", skip = 13)
@@ -120,11 +123,34 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL){
     }
   }
 
-  attr(raw_data, "method") <- method
-  attr(raw_data, "metadata") <- meta
-  raw_data <- as.data.frame(raw_data)
-  class(raw_data) <- c("aa3", "data.frame")
-  return(raw_data)
-}
+  lm_list <- list()
+  for( i in 1:3){
+    # nutrient name
+  nutri_name <-  stringr::str_split(vals[i], pattern = "_")[[1]][1]
 
+  lm_mod <- stats::lm(raw_data,
+                      formula = stats::as.formula(paste(vals[i],"~",stds[i])))
+
+  data.frame(std_name = paste(nutri_name),
+             intercept = lm_mod$coefficients[[1]],
+             values = lm_mod$coefficients[[2]],
+             r_squared = round(summary(lm_mod)$r.squared,digits = 3),
+             n = dplyr::filter(raw_data, sample_type == "CALB") %>.%
+               dplyr::select(., stds[i]) %>.%
+               sum(!is.na(.))
+  ) ->  lm_list[[i]]
+
+  names(lm_list)[i] <- paste(nutri_name)
+  }
+  lm_df <- dplyr::bind_rows(lm_list)
+
+  attr(raw_data, "method") <- method
+  attr(raw_data, "calb_lm") <- lm_df
+
+  #attr(raw_data, "metadata") <- meta
+  #raw_data <- as.data.frame(raw_data)
+  #class(raw_data) <- c("aa3", "data.frame")
+  econum::new_econum_data(x = raw_data, metadata = meta,class = "aa3")
+  #return(raw_data)
+}
 

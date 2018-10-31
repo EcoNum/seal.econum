@@ -86,6 +86,7 @@ Il est dès lors indispensable de proposer des outils permettant de combiner ces
 Tout d’abord, il est intéressant d’encoder proprement les données. Il faut de plus pallier aux manquements cités ci-dessus, la solutions la plus simple est de rédiger un second fichier sous la forme d’un template conçu à cet effet afin de venir ajouter l’ensemble des informations manquantes. Ce second document est d’une importance capitale afin de connaitre la provenance d’un échantillon. Pour ce faire, la colonne sample.id va servir de lien entre les deux tableaux. Le nom donné au second fichier est le même que celui du premier avec une extension différente.
 
 ```{r}
+SciViews::R
 library(seal.econum)
 # importation de données exemples
 aa3_txt <- "../inst/extra_data/181009A.TXT"
@@ -143,7 +144,7 @@ valid <- build_db_aa3(aa3_combine = calb_aa3)
 ```
 
 ```{r}
-valid$samp_db
+class(valid$samp_db)
 ```
 
 
