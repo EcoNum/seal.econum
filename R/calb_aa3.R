@@ -121,7 +121,7 @@ calb_aa3 <- function(aa3_combine, filter_list) {
 
   print(lm_df)
 
-  attr(aa3_combine, "class") <- c("aa3", "data.frame")
+  attr(aa3_combine, "class") <- attribute_list$class
   attr(aa3_combine, "method") <- attribute_list$method
   attr(aa3_combine, "calb_lm") <- lm_df
   attr(aa3_combine, "calb_lm_old") <- attribute_list$calb_lm
