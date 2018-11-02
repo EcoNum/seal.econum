@@ -44,6 +44,8 @@ calb.aa3 <- function(obj, filter_list = NULL) {
                                  pattern = "std")] -> std
   names(obj)[stringr::str_detect(names(obj),
                                  pattern = "conc")] -> conc
+  stringr::str_split(values, pattern = "_") %>.%
+    sapply(., `[[`, 1) -> nutri_name
 
   # Output list
   lm_list <- list()
@@ -51,23 +53,29 @@ calb.aa3 <- function(obj, filter_list = NULL) {
   # attribute_list
   attribute_list <- attributes(obj)
 
+
+
   for (i in 1:length(values)) {
 
-    # nutrient name
-    nutri_name <-  stringr::str_split(values[i], pattern = "_")[[1]][1]
-
     # IF ... nutrient in filter_list
-    if (nutri_name %in% names(filter_list)) {
+    if (nutri_name[i] %in% names(filter_list)) {
 
       # Check conc_list
-      if ( sum(!(filter_list[[nutri_name]] %in% obj[,std[i]])) != 0 ) {
+      if ( sum(!(filter_list[[nutri_name[i]]] %in% obj[,std[i]])) != 0 ) {
         stop("Attention : concentration non valide")
       }
 
       # Replace values by NA
-      obj[which(obj[,std[i]] %in% filter_list[[nutri_name]] &
+      obj$old_val <- obj[[values[i]]]
+      names(obj)[length(obj)] <- paste(values[i], "old", sep = "_")
+
+      obj$old_std <- obj[[std[i]]]
+      names(obj)[length(obj)] <- paste(std[i], "old", sep = "_")
+
+      obj[which(obj[,std[i]] %in% filter_list[[nutri_name[i]]] &
                   obj$sample_type == "CALB"),
-          c(std[i], conc[i], values[i]) ] <- NA
+          c(std[i], values[i]) ] <- NA
+
 
       # Calb_data
       obj[obj$sample_type == "CALB", c(std[i], values[i])] %>.%
@@ -82,32 +90,30 @@ calb.aa3 <- function(obj, filter_list = NULL) {
       lm_mod <- stats::lm(calb, formula = stats::as.formula(paste(values[i] ,
                                                                   "~", std[i])))
 
-      data.frame(std_name = paste(nutri_name, "new", sep = "_"),
+      data.frame(std_name = paste(nutri_name[i]),
                  intercept = lm_mod$coefficients[[1]],
                  values = lm_mod$coefficients[[2]],
                  r_squared = round(summary(lm_mod)$r.squared,digits = 4),
                  n = length(calb[[std[i]]]),
-                 filter_conc = I(filter_list[nutri_name])
+                 filter_conc = I(filter_list[nutri_name[i]])
       ) ->  lm_list[[i]]
 
-      names(lm_list)[i] <- paste(nutri_name)
+      names(lm_list)[i] <- paste(nutri_name[i])
 
       # add new nutrient values
-      cnum <- which(names(obj) == conc[i])
-      names(obj)[cnum] <- paste(conc[i], "old", sep = "_")
-      obj %>.%
-        dplyr::mutate(., new = round((obj[,values[i]] -
-                                        lm_mod$coefficients[[1]]) /
-                                       lm_mod$coefficients[[2]],3)
-        ) -> obj
+      obj$old_conc <- obj[[conc[i]]]
+      names(obj)[length(obj)] <- paste(conc[i], "old", sep = "_")
 
-      names(obj)[length(obj)] <- paste(conc[i])
+      obj[conc[i]] <- round((obj[,values[i]] - lm_mod$coefficients[[1]]) /
+                                  lm_mod$coefficients[[2]],3)
+
+      attribute_list$calb_lm$std_name[i] <- paste(nutri_name[i], "old", sep = "_")
 
     } else {
 
       lm_list[[i]] <- attribute_list$calb_lm[i,]
 
-      names(lm_list)[i] <- paste(nutri_name)
+      names(lm_list)[i] <- paste(nutri_name[i])
 
     }
 
@@ -124,4 +130,4 @@ calb.aa3 <- function(obj, filter_list = NULL) {
   attr(obj, "metadata") <- attribute_list$metadata
 
   return(obj)
-    }
+}

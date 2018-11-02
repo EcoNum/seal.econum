@@ -1,7 +1,7 @@
 
 print.aa3 <- function(aa3){
 
-  (as_tibble(aa3))
+  as_tibble(aa3)
 
   # METADATA
   if(is.null(attr(aa3, which = "metadata")$topic)){
