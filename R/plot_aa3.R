@@ -99,15 +99,15 @@ plot.aa3 <- function(obj, graph_type = "NO", old_data = FALSE){
                 y = max(obj[which(obj$sample_type == "CALB" &
                                     obj[,b[i]] != "NA"), a[i]]),
                 label = eq, parse = TRUE) +
-      ggrepel::geom_text_repel(aes(label = obj[,b[i]]),
+      ggrepel::geom_text_repel(aes(label = obj[obj[,b[i]] != "NA", b[i]]),
                                nudge_y = 1.5, nudge_x = 1.5, direction = "both",
                                segment.size = 0.2, na.rm = TRUE)
 
     if (graph_type == "ALL") {
-      graph_aa3[[i]] <- x
+      graph_aa3[[i]] <- x + ggtitle(nutri_name[i])
       names(graph_aa3)[i] <- paste(a[i])
     } else if (graph_type == "lm") {
-      graph_aa3[[i]] <- x3
+      graph_aa3[[i]] <- x3 + ggtitle(nutri_name[i])
       names(graph_aa3)[i] <- paste(a[i])
     } else {
       x4 <- chart::ggarrange(x, x3)
