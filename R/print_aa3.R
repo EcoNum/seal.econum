@@ -1,8 +1,26 @@
+#' Print aa3 object
+#'
+#' @param obj aa3 object
+#'
+#' @return La fonction imprime la structure, les metadonnees, les methodes
+#' utilisees pour les mesures et les parametres des regressions lineaires de
+#' l'objet aa3 fourni.
+#'
+#' @export
+#' @importFrom dplyr glimpse
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr mutate
+#' @importFrom stringr str_split
+#' @importFrom stringr str_detect
+#'
+#' @examples
+#' # aa3_combine <- convert_aa3("inst/extra_data/181018E.TXT", "inst/extra_data/181018E.xlsx", project = "test")
+#' # print(aa3_combine)
+#'
 
 print.aa3 <- function(obj){
   # DATA
   cat("An EcoNumData object with :", "\n")
-  # print(dplyr::as_tibble(obj))
   dplyr::glimpse(obj)
 
   # METADATA
@@ -10,7 +28,7 @@ print.aa3 <- function(obj){
     cat("\n", "Metadata : ", "\n")
     if (is.null(attr(obj, which = "metadata")$topic)) {
       dplyr::bind_rows(attributes(obj)$metadata[1:6]) %>.%
-        mutate(., topic = "NULL") %>.%
+        dplyr::mutate(., topic = "NULL") %>.%
         as.data.frame(.) %>.%
         print(.)
     } else {
