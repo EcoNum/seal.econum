@@ -22,7 +22,8 @@
 #' # aa3_combine <- convert_aa3("inst/extra_data/181018E.TXT", "inst/extra_data/181018E.xlsx", project = "test")
 #' # filter_list <- list(Ptot =  c(50, 25), Ntot = c(0.1, 0.5, 1, 2))
 #' # plot_aa3(aa3_combine)
-#' # calb_aa3(aa3_combine, filter_list)
+#' # calb.aa3(aa3_combine, filter_list) -> aa3_calb
+#' # print(aa3_calb)
 #'
 
 calb.aa3 <- function(obj, filter_list = NULL) {

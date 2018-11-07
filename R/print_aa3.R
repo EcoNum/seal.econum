@@ -20,7 +20,7 @@
 
 print.aa3 <- function(obj){
   # DATA
-  cat("An EcoNumData object with :", "\n")
+  cat("\n","An EcoNumData object with :", "\n")
   dplyr::glimpse(obj)
 
   # METADATA
