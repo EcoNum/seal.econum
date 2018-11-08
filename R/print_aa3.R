@@ -12,6 +12,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom stringr str_split
 #' @importFrom stringr str_detect
+#' @importFrom visdat vis_dat
 #'
 #' @examples
 #' # aa3_combine <- convert_aa3("inst/extra_data/181018E.TXT", "inst/extra_data/181018E.xlsx", project = "test")
@@ -22,6 +23,7 @@ print.aa3 <- function(obj){
   # DATA
   cat("\n","An EcoNumData object with :", "\n")
   dplyr::glimpse(obj)
+  print(visdat::vis_dat(obj))
 
   # METADATA
   if ("metadata" %in% names(attributes(obj))) {
