@@ -66,7 +66,7 @@ build_calbdb_aa3 <- function(obj) {
   prim_drift_all %>.%
     dplyr::select(., sample_id, peak_number, sample_type,
                   date_time, filename, values) %>.%
-    tidyr::gather(., key = "std_type", value = "values", values) -> prim_drift
+    tidyr::gather(., key = "std_type", value = "value", values) -> prim_drift
 
   ## Ajout de l'id unique, modification de std_type (ex : Ptot_values --> Ptot)
   ## et selection des colonnes
@@ -104,7 +104,7 @@ build_calbdb_aa3 <- function(obj) {
   # Assemblage des 2 dataframes en fonction de l'id et rearrangement des donnees
   prim_drift %>.%
     dplyr::inner_join(., prim_drift_conc, by = "id")  %>.%
-    dplyr::arrange(., id, date_time, sample_type, filename, std_type, values,
+    dplyr::arrange(., id, date_time, sample_type, filename, std_type, value,
                    concentration) -> prim_drift_db
 
   # Retirer les objets inutiles
@@ -160,8 +160,8 @@ build_calbdb_aa3 <- function(obj) {
       dplyr::mutate(., id = paste(lubridate::date(calb_data$date_time),
                                   nutri_names[i],
                                   calb_data[[nutrient[1]]], sep = "_"),
-                    filename = attr(obj,
-                                    which = "metadata")$sample)  %>.%
+                        filename = attr(obj,
+                                        which = "metadata")$sample)  %>.%
       tidyr::gather(., key = "std_type", value = "concentration", 3) -> calb_db
 
     # Modifier de std_type (ex : Ptot_values --> Ptot)
@@ -170,7 +170,7 @@ build_calbdb_aa3 <- function(obj) {
                                                                   pattern = "_") %>.%
                                                lapply(., `[[`, 1))) -> calb_db
     # Renommer la colonne nutrient_values
-    names(calb_db)[3] <- "values"
+    names(calb_db)[3] <- "value"
 
     # Annotater des valeurs filtrees en ajoutant _old à std_type si filter non-NULL
     calb_db$std_type[calb_db$concentration %in% filter] <- paste(nutri_names[i],
@@ -178,7 +178,7 @@ build_calbdb_aa3 <- function(obj) {
                                                                  sep = "_")
     # Selectionner les variables d'interet pour CALB_db
     calb_db %>.%
-      dplyr::select(., id, date_time, sample_type, filename, std_type, values,
+      dplyr::select(., id, date_time, sample_type, filename, std_type, value,
                     concentration) -> calb_db
 
     # Ajouter calb_db a calb_db_list
@@ -192,11 +192,11 @@ build_calbdb_aa3 <- function(obj) {
     dplyr::bind_rows(., prim_drift_db) -> calb_db
 
   # Attributes calb_db
-  attr(calb_db, "class") <- attribute_list$class
-  attr(calb_db, "method") <- attribute_list$method
-  attr(calb_db, "calb_lm") <- attribute_list$calb_lm
-  attr(calb_db, "calb_lm_old") <- attribute_list$calb_lm_old
-  attr(calb_db, "metadata") <- attribute_list$metadata
+  # attr(calb_db, "class") <- attribute_list$class
+  # attr(calb_db, "method") <- attribute_list$method
+  # attr(calb_db, "calb_lm") <- attribute_list$calb_lm
+  # attr(calb_db, "calb_lm_old") <- attribute_list$calb_lm_old
+  # attr(calb_db, "metadata") <- attribute_list$metadata
 
   return(calb_db)
 
@@ -251,11 +251,11 @@ build_sampdb_aa3 <- function(obj) {
                   filename, date_time, authors, comment) ->  samp_db
 
   # Attributes samp_db
-  attr(samp_db, "class") <- attribute_list$class
-  attr(samp_db, "method") <- attribute_list$method
-  attr(samp_db, "calb_lm") <- attribute_list$calb_lm
-  attr(samp_db, "calb_lm_old") <- attribute_list$calb_lm_old
-  attr(samp_db, "metadata") <- attribute_list$metadata
+  # attr(samp_db, "class") <- attribute_list$class
+  # attr(samp_db, "method") <- attribute_list$method
+  # attr(samp_db, "calb_lm") <- attribute_list$calb_lm
+  # attr(samp_db, "calb_lm_old") <- attribute_list$calb_lm_old
+  # attr(samp_db, "metadata") <- attribute_list$metadata
 
   return(samp_db)
 }
@@ -373,14 +373,44 @@ build_database_aa3 <- function(obj, conn){
 }
 
 
-# CREATE TABLE calb_db (
+
+RMariaDB::dbSendQuery(con,
+
+"CREATE TABLE calb_db (
+  id            VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
+  date_time     DATE           NOT NULL,
+  sample_type   VARCHAR(20)    NOT NULL,
+  filename      VARCHAR(255)   NOT NULL,
+  std_type      VARCHAR(5)     NOT NULL,
+  value         INTEGER(10)     NOT NULL,
+  concentration REAL           NOT NULL
+);"
+
+# "CREATE TEMPORARY TABLE calb_db (
 #   id            VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
 #   date_time     DATE           NOT NULL,
 #   sample_type   VARCHAR(20)    NOT NULL,
 #   filename      VARCHAR(255)   NOT NULL,
-#   value         INTEGER(6)     NOT NULL,
+#   std_type      VARCHAR(5)     NOT NULL,
+#   value         INTEGER(10)     NOT NULL,
 #   concentration REAL           NOT NULL
-# );
+# );"
+
+
+)
+
+RMariaDB::dbListTables(con)
+RMariaDB::dbExistsTable(con, "calb_db")
+
+RMariaDB::dbReadTable(con, "calb_db")
+RMariaDB::dbWriteTable(con, "calb_db", calb_db_aa3, append = TRUE)
+RMariaDB::dbReadTable(con, "calb_db")
+RMariaDB::dbWriteTable(con, "calb_db", calb_db_aa3, append = TRUE) # Error add same database
+
+RMariaDB::dbDisconnect(con)
+RMariaDB::dbRemoveTable(con, "calb_db")
+
+
 
 # CREATE TABLE samp_orga_db (
 #   sample_id       VARCHAR(50)    NOT NULL  UNIQUE  PRIMARY KEY,
