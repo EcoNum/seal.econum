@@ -232,14 +232,18 @@ build_sampdb_aa3 <- function(obj) {
   names(samp_db)[length(samp_db)] <- filename
 
   # Creation du vecteur nutrient pour la selection des colonnes (new and old)
-  nutrient = sort(c(conc, values))
-  nutrient_old = paste(nutrient, "old", sep = "_")
+  # Creation des vecteurs de noms de colonne pour values, std et conc
+  names(obj)[stringr::str_detect(names(obj), pattern = "values")] -> values
+  names(obj)[stringr::str_detect(names(obj), pattern = "conc")] -> conc
 
-  for (i in nutrient_old) {
-    if (i %in% names(samp_db)) {
-      nutrient <- c(nutrient, i)
-    }
-  }
+  nutrient <-  sort(c(conc[!stringr::str_detect(conc,
+                                                pattern = "old")],
+                      values[!stringr::str_detect(values,
+                                                  pattern = "old")]))
+  nutrient <- c(nutrient, sort(c(conc[stringr::str_detect(conc,
+                                                          pattern = "old")],
+                                 values[stringr::str_detect(values,
+                                                            pattern = "old")])))
 
   # Selection des variables qui constituent samp_db
   samp_db %>.%
@@ -335,7 +339,7 @@ build_metadb_aa3 <- function(obj) {
 #' @importFrom stringr str_split
 #'
 #' @examples
-build_database_aa3 <- function(obj, con){
+build_database_aa3 <- function(obj, conn){
 
   # Check_1 : aa3 class
   if ( !("aa3" %in% class(obj)) ) {
@@ -345,6 +349,7 @@ build_database_aa3 <- function(obj, con){
   # calb database
   calb_db <- build_calbdb_aa3(obj)
   print(calb_db)
+  # RMariaDB::dbWriteTable(conn , "calb_db", calb_db, temporary = FALSE )
 
   # samp database
   samp_db <- build_sampdb_aa3(obj)
@@ -353,17 +358,97 @@ build_database_aa3 <- function(obj, con){
   if (stringr::str_split(attr(obj, which = "metadata")$sample,
                          pattern = "-")[[1]][2] == "orga") {
     # DATABASE ORGA
+    # RMariaDB::dbWriteTable(conn , "samp_orga_db", samp_db, temporary = FALSE )
   } else if (stringr::str_split(attr(obj, which = "metadata")$sample,
                                 pattern = "-")[[1]][2] == "inorga") {
     # DATABASE INORGA
+    # RMariaDB::dbWriteTable(conn , "samp_inorga_db", samp_db, temporary = FALSE )
   }
-
 
   # Metadata/Method database
   meta_db <- build_metadb_aa3(obj)
   print(meta_db)
-
+  # RMariaDB::dbWriteTable(conn , "metadata_db", meta_db, temporary = FALSE )
 
 }
 
 
+# CREATE TABLE calb_db (
+#   id            VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
+#   date_time     DATE           NOT NULL,
+#   sample_type   VARCHAR(20)    NOT NULL,
+#   filename      VARCHAR(255)   NOT NULL,
+#   value         INTEGER(6)     NOT NULL,
+#   concentration REAL           NOT NULL
+# );
+
+# CREATE TABLE samp_orga_db (
+#   sample_id       VARCHAR(50)    NOT NULL  UNIQUE  PRIMARY KEY,
+#   sample          VARCHAR(20)    NOT NULL,
+#   sample_date     DATE           NOT NULL,
+#   NO2_conc        REAL           NOT NULL,
+#   NO2_values      INTEGER(6)     NOT NULL,
+#   Ntot_conc       REAL           NOT NULL,
+#   Ntot_values     INTEGER(6)     NOT NULL,
+#   Ptot_conc       REAL           NOT NULL,
+#   Ptot_values     INTEGER(6)     NOT NULL,
+#   NO2_conc_old    REAL           ,
+#   NO2_values_old  INTEGER(6)     ,
+#   Ntot_conc_old   REAL           ,
+#   Ntot_values_old INTEGER(6)     ,
+#   Ptot_conc_old   REAL           ,
+#   Ptot_values_old INTEGER(6)     ,
+#   project         VARCHAR(50)    NOT NULL, # supprimer
+#   orga_filename   VARCHAR(20)    NOT NULL,
+#   date_time       DATE           NOT NULL, # supprimer
+#   authors         VARCHAR(100)   NOT NULL, # supprimer
+#   comment         TEXT
+# );
+
+# CREATE TABLE samp_inorga_db (
+#   sample_id       VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
+#   sample          VARCHAR(20)    NOT NULL,
+#   sample_date     DATE           NOT NULL,
+#   NH4_conc        REAL           NOT NULL,
+#   NH4_values      INTEGER(6)     NOT NULL,
+#   NOx_conc        REAL           NOT NULL,
+#   NOx_values      INTEGER(6)     NOT NULL,
+#   PO4_conc        REAL           NOT NULL,
+#   PO4_values      INTEGER(6)     NOT NULL,
+#   NH4_conc_old    REAL           ,
+#   NH4_values_old  INTEGER(6)     ,
+#   NOx_conc_old    REAL           ,
+#   NOx_values_old  INTEGER(6)     ,
+#   PO4_conc_old    REAL           ,
+#   PO4_values_old  INTEGER(6)     ,
+#   project         VARCHAR(255)   NOT NULL, # supprimer
+#   orga_filename   VARCHAR(20)    NOT NULL,
+#   date_time       DATE           NOT NULL, # supprimer
+#   authors         VARCHAR(255)   NOT NULL, # supprimer
+#   comment         TEXT
+# );
+
+# CREATE TABLE metadata_db (
+#   id               VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
+#   project          VARCHAR(255)   NOT NULL,
+#   date             DATE           NOT NULL,
+#   filename         VARCHAR(20)    NOT NULL,
+#   authors          VARCHAR(100)   NOT NULL,
+#   comment          VARCHAR(100)   NOT NULL,
+#   topic            VARCHAR(50)    ,
+#   channel_1_base   VARCHAR(6)     NOT NULL,
+#   channel_1_gain   VARCHAR(6)     NOT NULL,
+#   channel_1_lamp   VARCHAR(6)     NOT NULL,
+#   channel_1_method VARCHAR(6)     NOT NULL,
+#   channel_1_unit   VARCHAR(6)     NOT NULL,
+#   channel_2_base   VARCHAR(6)     NOT NULL,
+#   channel_2_gain   VARCHAR(6)     NOT NULL,
+#   channel_2_lamp   VARCHAR(6)     NOT NULL,
+#   channel_2_method VARCHAR(6)     NOT NULL,
+#   channel_2_unit   VARCHAR(6)     NOT NULL,
+#   channel_3_base   VARCHAR(6)     NOT NULL,
+#   channel_3_gain   VARCHAR(6)     NOT NULL,
+#   channel_3_lamp   VARCHAR(6)     NOT NULL,
+#   channel_3_method VARCHAR(6)     NOT NULL,
+#   channel_3_unit   VARCHAR(6)     NOT NULL
+# );
