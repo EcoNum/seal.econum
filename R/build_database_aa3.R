@@ -349,7 +349,7 @@ build_database_aa3 <- function(obj, conn){
   # calb database
   calb_db <- build_calbdb_aa3(obj)
   print(calb_db)
-  # RMariaDB::dbWriteTable(conn , "calb_db", calb_db, temporary = FALSE )
+  # RMariaDB::dbWriteTable(con , "calb_db", calb_db, append = TRUE )
 
   # samp database
   samp_db <- build_sampdb_aa3(obj)
@@ -368,36 +368,48 @@ build_database_aa3 <- function(obj, conn){
   # Metadata/Method database
   meta_db <- build_metadb_aa3(obj)
   print(meta_db)
-  # RMariaDB::dbWriteTable(conn , "metadata_db", meta_db, temporary = FALSE )
+  # RMariaDB::dbWriteTable(con , "metadata_db", meta_db, append = TRUE )
 
 }
 
 
 
-RMariaDB::dbSendQuery(con,
+RMariaDB::dbSendQuery(con, "CREATE TABLE metadata_db (
+                      id               VARCHAR(255)   NOT NULL  UNIQUE,
+                      project          VARCHAR(255)   NOT NULL,
+                      date             DATE           NOT NULL,
+                      filename         VARCHAR(20)    NOT NULL  UNIQUE  PRIMARY KEY,
+                      author           VARCHAR(100)   NOT NULL,
+                      comment          VARCHAR(100)   NOT NULL,
+                      topic            VARCHAR(50)    ,
+                      channel_1_base   VARCHAR(6)     NOT NULL,
+                      channel_1_gain   VARCHAR(6)     NOT NULL,
+                      channel_1_lamp   VARCHAR(6)     NOT NULL,
+                      channel_1_method VARCHAR(6)     NOT NULL,
+                      channel_1_unit   VARCHAR(6)     NOT NULL,
+                      channel_2_base   VARCHAR(6)     NOT NULL,
+                      channel_2_gain   VARCHAR(6)     NOT NULL,
+                      channel_2_lamp   VARCHAR(6)     NOT NULL,
+                      channel_2_method VARCHAR(6)     NOT NULL,
+                      channel_2_unit   VARCHAR(6)     NOT NULL,
+                      channel_3_base   VARCHAR(6)     NOT NULL,
+                      channel_3_gain   VARCHAR(6)     NOT NULL,
+                      channel_3_lamp   VARCHAR(6)     NOT NULL,
+                      channel_3_method VARCHAR(6)     NOT NULL,
+                      channel_3_unit   VARCHAR(6)     NOT NULL
+);")
 
-"CREATE TABLE calb_db (
-  id            VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
-  date_time     DATE           NOT NULL,
-  sample_type   VARCHAR(20)    NOT NULL,
-  filename      VARCHAR(255)   NOT NULL,
-  std_type      VARCHAR(5)     NOT NULL,
-  value         INTEGER(10)     NOT NULL,
-  concentration REAL           NOT NULL
-);"
+RMariaDB::dbSendQuery(con, "CREATE TABLE calb_db (
+                      id            VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
+                      date_time     DATE           NOT NULL,
+                      sample_type   VARCHAR(20)    NOT NULL,
+                      filename      VARCHAR(255)   NOT NULL,
+                      std_type      VARCHAR(10)    NOT NULL,
+                      value         INTEGER(10)    NOT NULL,
+                      concentration REAL           NOT NULL,
+                      FOREIGN KEY (filename) REFERENCES metadata_db(filename)
+);")
 
-# "CREATE TEMPORARY TABLE calb_db (
-#   id            VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
-#   date_time     DATE           NOT NULL,
-#   sample_type   VARCHAR(20)    NOT NULL,
-#   filename      VARCHAR(255)   NOT NULL,
-#   std_type      VARCHAR(5)     NOT NULL,
-#   value         INTEGER(10)     NOT NULL,
-#   concentration REAL           NOT NULL
-# );"
-
-
-)
 
 RMariaDB::dbListTables(con)
 RMariaDB::dbExistsTable(con, "calb_db")
@@ -412,7 +424,7 @@ RMariaDB::dbRemoveTable(con, "calb_db")
 
 
 
-# CREATE TABLE samp_orga_db (
+# "CREATE TABLE samp_orga_db (
 #   sample_id       VARCHAR(50)    NOT NULL  UNIQUE  PRIMARY KEY,
 #   sample          VARCHAR(20)    NOT NULL,
 #   sample_date     DATE           NOT NULL,
@@ -432,10 +444,11 @@ RMariaDB::dbRemoveTable(con, "calb_db")
 #   orga_filename   VARCHAR(20)    NOT NULL,
 #   date_time       DATE           NOT NULL, # supprimer
 #   authors         VARCHAR(100)   NOT NULL, # supprimer
-#   comment         TEXT
-# );
+#   comment         TEXT,
+#   FOREIGN KEY (orga_filename) REFERENCES metadata_db(filename)
+# );"
 
-# CREATE TABLE samp_inorga_db (
+# "CREATE TABLE samp_inorga_db (
 #   sample_id       VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
 #   sample          VARCHAR(20)    NOT NULL,
 #   sample_date     DATE           NOT NULL,
@@ -452,33 +465,50 @@ RMariaDB::dbRemoveTable(con, "calb_db")
 #   PO4_conc_old    REAL           ,
 #   PO4_values_old  INTEGER(6)     ,
 #   project         VARCHAR(255)   NOT NULL, # supprimer
-#   orga_filename   VARCHAR(20)    NOT NULL,
+#   inorga_filename   VARCHAR(20)  NOT NULL,
 #   date_time       DATE           NOT NULL, # supprimer
 #   authors         VARCHAR(255)   NOT NULL, # supprimer
-#   comment         TEXT
-# );
+#   comment         TEXT,
+#   FOREIGN KEY (inorga_filename) REFERENCES metadata_db(filename)
+# );"
 
-# CREATE TABLE metadata_db (
-#   id               VARCHAR(255)   NOT NULL  UNIQUE  PRIMARY KEY,
-#   project          VARCHAR(255)   NOT NULL,
-#   date             DATE           NOT NULL,
-#   filename         VARCHAR(20)    NOT NULL,
-#   authors          VARCHAR(100)   NOT NULL,
-#   comment          VARCHAR(100)   NOT NULL,
-#   topic            VARCHAR(50)    ,
-#   channel_1_base   VARCHAR(6)     NOT NULL,
-#   channel_1_gain   VARCHAR(6)     NOT NULL,
-#   channel_1_lamp   VARCHAR(6)     NOT NULL,
-#   channel_1_method VARCHAR(6)     NOT NULL,
-#   channel_1_unit   VARCHAR(6)     NOT NULL,
-#   channel_2_base   VARCHAR(6)     NOT NULL,
-#   channel_2_gain   VARCHAR(6)     NOT NULL,
-#   channel_2_lamp   VARCHAR(6)     NOT NULL,
-#   channel_2_method VARCHAR(6)     NOT NULL,
-#   channel_2_unit   VARCHAR(6)     NOT NULL,
-#   channel_3_base   VARCHAR(6)     NOT NULL,
-#   channel_3_gain   VARCHAR(6)     NOT NULL,
-#   channel_3_lamp   VARCHAR(6)     NOT NULL,
-#   channel_3_method VARCHAR(6)     NOT NULL,
-#   channel_3_unit   VARCHAR(6)     NOT NULL
-# );
+
+
+dbSendQuery(con, "SELECT * FROM metadata_db") -> t
+t
+dbFetch(t)
+dbSendQuery(con, "SELECT id, project, filename FROM metadata_db") -> t
+t
+dbFetch(t)
+dbSendQuery(con, "SELECT * FROM metadata_db JOIN calb_db") -> t
+dbFetch(t)
+dbSendQuery(con, "SELECT * FROM metadata_db JOIN calb_db") -> t
+dbFetch(t, n = 10 )
+dbSendQuery(con, "SELECT metadata_db.id, project, metadata_db.filename,
+                         calb_db.id, std_type, value, concentration
+                  FROM metadata_db
+                  JOIN calb_db") -> t
+t
+dbFetch(t)
+dbSendQuery(con, "SELECT metadata_db.id, project, metadata_db.filename,
+                         calb_db.id, std_type, value, concentration
+                  FROM metadata_db
+                  JOIN calb_db
+                  WHERE std_type = 'PO4' ") -> t
+t
+dbFetch(t)
+dbSendQuery(con, "SELECT m.id, project, m.filename,
+                         c.id, std_type, value, concentration
+                  FROM metadata_db AS m
+                  JOIN calb_db AS c
+                  WHERE std_type IN ('PO4', 'NH4') AND sample_type = 'CALB'") -> t
+t
+dbFetch(t)
+dbSendQuery(con, "SELECT m.id, project, m.filename,
+                         c.id AS id_std, std_type, value, concentration
+                  FROM metadata_db AS m
+                  JOIN calb_db AS c
+                  WHERE std_type IN ('PO4', 'NH4') AND sample_type = 'CALB'
+                  ORDER BY std_type DESC, concentration") -> t
+t
+dbFetch(t)
