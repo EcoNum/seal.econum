@@ -114,7 +114,7 @@ La première phase de validation débute par la visualisation des données et de
 
 
 ```{r}
-plot_aa3(aa3_combine = aa3_combine)
+plot(aa3_combine)
 ```
 
 
@@ -123,7 +123,7 @@ plot_aa3(aa3_combine = aa3_combine)
 Les données de calibration peuvent être eronée. Pour ce faire, la fonction calb_correction_aa3() a été mise au point. L'objet obtenu ressemble fortement à celui proposé par la fonction **calb_aa3**. Cette fonction requiert un objet de type calb_aa3. L'argument permettant de corriger plusieurs courbe de calibration en une seule fonction est **filter_list**
 
 ```{r}
-calb_aa3 <- calb_aa3(aa3_combine = aa3_combine, filter_list = list(PO4 = 10, NH4 = c(0.1, 0.5)))
+calb_aa3 <- calb.aa3(aa3_combine, filter_list = list(PO4 = 10, NH4 = c(0.1, 0.5)))
 ```
 
 ```{r}
@@ -131,20 +131,17 @@ attributes(calb_aa3)
 ```
 
 ```{r}
-attr(calb_aa3, "lm_df")$filter_conc
-```
-```{r}
 #econum::new_econum_data(x = calb_aa3, metadata = attr(calb_aa3, "metadata"), class = "aa3")
 #repos function
 ```
 
 
 ```{r}
-valid <- build_db_aa3(aa3_combine = calb_aa3)
+#valid <- build_db_aa3(aa3_combine = calb_aa3)
 ```
 
 ```{r}
-class(valid$samp_db)
+#class(valid$samp_db)
 ```
 
 

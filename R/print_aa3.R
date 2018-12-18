@@ -15,8 +15,7 @@
 #' @importFrom visdat vis_dat
 #'
 #' @examples
-#' # aa3_combine <- convert_aa3("inst/extra_data/181018E.TXT", "inst/extra_data/181018E.xlsx", project = "test")
-#' # print(aa3_combine)
+#' #todo
 #'
 
 print.aa3 <- function(obj){
@@ -70,3 +69,4 @@ print.aa3 <- function(obj){
   }
 
 }
+

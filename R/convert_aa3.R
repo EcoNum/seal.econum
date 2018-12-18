@@ -15,16 +15,10 @@
 #' @export
 #'
 #' @examples
-#' # convert_aa3("inst/extra_data/181018E.TXT",
-#' # "inst/extra_data/181018E.xlsx") -> aa3_combine
-#' # head(aa3_combine)
-#' # attributes(aa3_combine)
+#'
+#' #todo
 #'
 
-"inst/extra_data/181018E.TXT" -> file_aa3_txt
-"inst/extra_data/181018E.xlsx" -> file_aa3_xlsx
-project <- "test"
-topic <- NULL
 convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL){
   # Import metadata and extract informaation
   header_read <- readr::read_lines(file_aa3_txt, n_max = 13,
@@ -76,7 +70,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL){
                             lamp = header$Lamp[i])
   }
 
-  bind_rows(method) %>.%
+  bind_rows(method) ->.
     as.data.frame(.) -> method
   row.names(method) <- c("channel_1", "channel_2", "channel_3")
 
@@ -131,13 +125,16 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL){
   lm_mod <- stats::lm(raw_data,
                       formula = stats::as.formula(paste(vals[i],"~",stds[i])))
 
+  # compute n for the data.frame
+  dplyr::filter(raw_data, sample_type == "CALB") -> .
+  dplyr::select(., stds[i]) ->.
+  sum(!is.na(.)) -> n
+
   data.frame(std_name = paste(nutri_name),
              intercept = lm_mod$coefficients[[1]],
              values = lm_mod$coefficients[[2]],
              r_squared = round(summary(lm_mod)$r.squared,digits = 3),
-             n = dplyr::filter(raw_data, sample_type == "CALB") %>.%
-               dplyr::select(., stds[i]) %>.%
-               sum(!is.na(.))
+             n = n
   ) ->  lm_list[[i]]
 
   names(lm_list)[i] <- paste(nutri_name)

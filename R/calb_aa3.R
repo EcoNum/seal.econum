@@ -19,11 +19,7 @@
 #' @importFrom chart chart
 #'
 #' @examples
-#' # aa3_combine <- convert_aa3("inst/extra_data/181018E.TXT", "inst/extra_data/181018E.xlsx", project = "test")
-#' # filter_list <- list(Ptot =  c(50, 25), Ntot = c(0.1, 0.5, 1, 2))
-#' # plot_aa3(aa3_combine)
-#' # calb.aa3(aa3_combine, filter_list) -> aa3_calb
-#' # print(aa3_calb)
+#' # todo
 #'
 
 calb.aa3 <- function(obj, filter_list = NULL) {
@@ -45,8 +41,8 @@ calb.aa3 <- function(obj, filter_list = NULL) {
                                  pattern = "std")] -> std
   names(obj)[stringr::str_detect(names(obj),
                                  pattern = "conc")] -> conc
-  stringr::str_split(values, pattern = "_") %>.%
-    sapply(., `[[`, 1) -> nutri_name
+  stringr::str_split(values, pattern = "_") %>%
+    sapply(`[[`, 1) -> nutri_name
 
   # Output list
   lm_list <- list()
@@ -79,8 +75,8 @@ calb.aa3 <- function(obj, filter_list = NULL) {
 
 
       # Calb_data
-      obj[obj$sample_type == "CALB", c(std[i], values[i])] %>.%
-        stats::na.omit(.) -> calb
+      obj[obj$sample_type == "CALB", c(std[i], values[i])] %>%
+        stats::na.omit() -> calb
 
       # Check n(std)
       if ( length(calb[[std[i]]]) <= 3) {

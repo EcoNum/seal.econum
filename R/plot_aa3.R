@@ -46,17 +46,17 @@ plot.aa3 <- function(obj, graph_type = "NO", old_data = FALSE){
   attr(x = obj, which = "metadata")$sample -> samp_name
 
   if (old_data) {
-    (names(obj)[str_detect(names(obj), pattern = "values_old")] -> a)
-    (names(obj)[str_detect(names(obj), pattern = "std_old")] -> b)
-    stringr::str_split(a, pattern = "_") %>.%
-      sapply(., `[[`, 1) %>.%
+    (names(obj)[stringr::str_detect(names(obj), pattern = "values_old")] -> a)
+    (names(obj)[stringr::str_detect(names(obj), pattern = "std_old")] -> b)
+    stringr::str_split(a, pattern = "_") -> .
+      sapply(., `[[`, 1) -> .
       paste(., "old", sep = "_") -> nutri_name
     attr(obj, "calb_lm_old") -> calb_lm
   } else {
-    (names(obj)[str_detect(names(obj), pattern = "values$")] -> a)
-    (names(obj)[str_detect(names(obj), pattern = "std$")] -> b)
-    stringr::str_split(a, pattern = "_") %>.%
-      sapply(., `[[`, 1) -> nutri_name
+    (names(obj)[stringr::str_detect(names(obj), pattern = "values$")] -> a)
+    (names(obj)[stringr::str_detect(names(obj), pattern = "std$")] -> b)
+    stringr::str_split(a, pattern = "_") ->.
+      sapply(.,  `[[`, 1) -> nutri_name
     attr(obj, "calb_lm") -> calb_lm
   }
 
@@ -67,11 +67,10 @@ plot.aa3 <- function(obj, graph_type = "NO", old_data = FALSE){
     x <- chart::chart(obj,
                       formula = stats::as.formula(paste(a[i], "~",
                                                         "date_time%color=%sample_type%group=%1"))) +
-      geom_line() +
-      geom_point(na.rm = TRUE) +
-      theme(legend.direction = "horizontal", legend.position = "bottom") +
-      guides(col = guide_legend(title = "Sample",title.position = "top"))
-
+      ggplot2::geom_line() +
+      ggplot2::geom_point(na.rm = TRUE) +
+      ggplot2::theme(legend.direction = "horizontal", legend.position = "bottom") +
+      ggplot2::guides(col = ggplot2::guide_legend(title = "Sample",title.position = "top"))
 
     # Equation
 
@@ -85,29 +84,29 @@ plot.aa3 <- function(obj, graph_type = "NO", old_data = FALSE){
     eq <- as.character(as.expression(eq))
     x3 <- chart::chart(obj,
                        formula = as.formula(paste(a[i], "~", b[i]))) +
-      geom_point(na.rm = TRUE) +
-      geom_abline(intercept = calb_lm[calb_lm$std_name == nutri_name[i],
+      ggplot2::geom_point(na.rm = TRUE) +
+      ggplot2::geom_abline(intercept = calb_lm[calb_lm$std_name == nutri_name[i],
                                       "intercept"],
                   slope = calb_lm[calb_lm$std_name == nutri_name[i],
                                   "values"]) +
-      labs( y = a[i], x = b[i]) +
-      scale_y_continuous(limits = range(obj[which(obj$sample_type == "CALB" &
+      ggplot2::labs( y = a[i], x = b[i]) +
+      ggplot2::scale_y_continuous(limits = range(obj[which(obj$sample_type == "CALB" &
                                                     obj[,b[i]] != "NA"),
                      a[i]], na.rm = TRUE)) +
-      geom_text(x = 2*(diff(range(obj[which(obj$sample_type == "CALB" &
+      ggplot2::geom_text(x = 2*(diff(range(obj[which(obj$sample_type == "CALB" &
                                               obj[,b[i]] != "NA"), b[i]])))/5 ,
                 y = max(obj[which(obj$sample_type == "CALB" &
                                     obj[,b[i]] != "NA"), a[i]]),
                 label = eq, parse = TRUE) +
-      ggrepel::geom_text_repel(aes(label = obj[obj[,b[i]] != "NA", b[i]]),
+      ggrepel::geom_text_repel(ggplot2::aes(label = obj[obj[,b[i]] != "NA", b[i]]),
                                nudge_y = 1.5, nudge_x = 1.5, direction = "both",
                                segment.size = 0.2, na.rm = TRUE)
 
     if (graph_type == "ALL") {
-      graph_aa3[[i]] <- x + ggtitle(nutri_name[i])
+      graph_aa3[[i]] <- x + ggplot2::ggtitle(nutri_name[i])
       names(graph_aa3)[i] <- paste(a[i])
     } else if (graph_type == "lm") {
-      graph_aa3[[i]] <- x3 + ggtitle(nutri_name[i])
+      graph_aa3[[i]] <- x3 + ggplot2::ggtitle(nutri_name[i])
       names(graph_aa3)[i] <- paste(a[i])
     } else {
       x4 <- chart::ggarrange(x, x3)
@@ -126,3 +125,4 @@ plot.aa3 <- function(obj, graph_type = "NO", old_data = FALSE){
   }
   return(graph_aa3)
 }
+

@@ -24,17 +24,22 @@ Imports:
     lubridate,
     ggrepel,
     ggpubr,
-    flow,
+    flow (>= 1.1.0),
     ggplot2,
     dplyr,
     tidyr,
-    chart,
+    chart (>= 1.2.0),
     broom,
-    SciViews,
-    econum
+    SciViews (>= 1.1.0),
+    econum (>= 1.2.0)
 Suggests:
     knitr,
     rmarkdown,
     testthat
-Remotes: SciViews/flow, SciViews/chart, SciViews/SciViews, EcoNum/econum
+Remotes:  
+    SciViews/flow,
+    SciViews/chart,
+    SciViews/SciViews,
+    EcoNum/econum,
+    econum/econum
 VignetteBuilder: knitr

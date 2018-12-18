@@ -5,5 +5,7 @@
 README.md
 README.Rmd
 NEWS.md
+new_idea.R
+print_aa3.R
 LICENSE
 ^\.travis\.yml$
