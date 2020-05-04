@@ -32,7 +32,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL) {
   }
 
   # Check_1
-  header_control <- c("ANAL", "RUN", "DATE", "TIME", "OPER", "COMM", "TYPE",
+  header_control <- c("ANAL", "RUN ", "DATE", "TIME", "OPER", "COMM", "TYPE",
     "CHAN", "METH", "UNIT", "Base", "Gain", "Lamp")
   length_list_element <- c(2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4)
 

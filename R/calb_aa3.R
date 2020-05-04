@@ -33,9 +33,8 @@ calb.aa3 <- function(obj, filter_list = NULL) {
   values <- names(obj)[grepl("values", names(obj))]
   std <- names(obj)[grepl("std", names(obj))]
   conc <- names(obj)[grepl("conc", names(obj))]
-  strsplit(values, split = "_", fixed = TRUE) %>%
-    sapply(`[[`, 1) ->
-    nutri_name
+  nutri_name <- sapply(strsplit(values, split = "_", fixed = TRUE), `[[`, 1)
+
 
   # Output list
   lm_list <- list()
@@ -61,9 +60,7 @@ calb.aa3 <- function(obj, filter_list = NULL) {
         obj$sample_type == "CALB"), c(std[i], values[i]) ] <- NA
 
       # Calb_data
-      obj[obj$sample_type == "CALB", c(std[i], values[i])] %>%
-        stats::na.omit() ->
-        calb
+      calb <- stats::na.omit(obj[obj$sample_type == "CALB", c(std[i], values[i])])
 
       # Check n(std)
       if ( length(calb[[std[i]]]) <= 3)

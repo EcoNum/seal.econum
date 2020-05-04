@@ -50,7 +50,8 @@ aa3_txt <- "../inst/extra_data/181009A.TXT"
 aa3 <- readr::read_delim(file = aa3_txt, delim = ";", col_names = FALSE,
   col_types = readr::cols( .default = "c"),
   locale = readr::locale(encoding = "LATIN1")) # particularly
-rmarkdown::paged_table(aa3)
+#rmarkdown::paged_table(aa3)
+aa3
 ```
 
 Ce fichier peut être divisé en deux parties distinctes. La première a pour but de fournir un ensemble de métadonnées sur l'anlyse et la seconde partie renvoit un tableau de données sur les échantillons analysés (courbe de calibration et échantillons liés à une expérience).
@@ -58,13 +59,15 @@ Ce fichier peut être divisé en deux parties distinctes. La première a pour bu
 Le préambule de ce document contient des informations importantes que l’on ne peut dissocier du tableau de données afin de comprendre les résultats.
 
 ```{r}
-rmarkdown::paged_table(aa3[0:13, ])
+#rmarkdown::paged_table(aa3[0:13, ])
+aa3[0:13, ]
 ```
 
 La seconde partie du document comprend les échantillons analysés aussi bien de calibrations que les échantillons liés à l'expérience. 
 
 ```{r}
-rmarkdown::paged_table(aa3[14:25, ])
+#rmarkdown::paged_table(aa3[14:25, ])
+aa3[14:25, ]
 ```
 
 Malgré le préambule et le tableau de données des informations essentielles sont manquantes. Pour annoter l’échantillon qui est dosé par l’instrument, on peut encoder uniquement ces références dans la colonnes Sample ID. Le nombre de caractères encodables est limité.
@@ -90,9 +93,10 @@ library(seal.econum)
 aa3_txt <- "../inst/extra_data/181009A.TXT"
 aa3_xlsx <- "../inst/extra_data/181009A.xlsx"
 # utilisation de la fonction d'importation et de conversion des données
-aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt, file_aa3_xlsx = aa3_xlsx,
-  project =  "project_test")
-rmarkdown::paged_table(aa3_combine)
+aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt,
+  file_aa3_xlsx = aa3_xlsx, project =  "project_test")
+#rmarkdown::paged_table(aa3_combine)
+aa3_combine
 ```
 
 Ce tableau de données comprend un ensemble d'attribus lié aux métadonnées du fichier au format txt.
@@ -121,7 +125,8 @@ plot(aa3_combine)
 Les données de calibration peuvent être eronée. Pour ce faire, la fonction calb_correction_aa3() a été mise au point. L'objet obtenu ressemble fortement à celui proposé par la fonction **calb_aa3**. Cette fonction requiert un objet de type calb_aa3. L'argument permettant de corriger plusieurs courbe de calibration en une seule fonction est **filter_list**
 
 ```{r}
-calb_aa3 <- calb.aa3(aa3_combine, filter_list = list(PO4 = 10, NH4 = c(0.1, 0.5)))
+calb_aa3 <- calb.aa3(aa3_combine,
+  filter_list = list(PO4 = 10, NH4 = c(0.1, 0.5)))
 ```
 
 ```{r}
