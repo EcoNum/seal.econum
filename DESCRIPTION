@@ -9,7 +9,7 @@ Authors@R: c(
 Description: Ensemble d'outils permettant la conversion, la correction et 
     l'analyse des données fournies pour le seal aa3 du laboratoire
     d'écologie numérique des milieux aquatiques de l'Université de Mons (Belgique).
-Depends: R (>= 3.4.4)
+Depends: R (>= 3.4)
 License: CC BY-SA 4.0
 Encoding: UTF-8
 LazyData: true
