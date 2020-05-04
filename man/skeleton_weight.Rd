@@ -33,5 +33,4 @@ growth$skeleton_weight <- skeleton_weight(buoyant_weight = growth$weight,
 S = growth$salinity, T = growth$temperature, P = 0, rho_aragonite = 2930) # compute new variable
 growth$skeleton_weight # see the new variable
 # more information see vignette
-
 }

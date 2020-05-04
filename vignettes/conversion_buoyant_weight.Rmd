@@ -38,7 +38,7 @@ Le changement de poids au cours du temps quantifie le taux de calcification ou a
 Partons d'un exemple d'une bouture de 1.5 grammes mesuré dans une eau avec une salinité de 35, une température de 25°C, et une pression hydrostatique de 0.
 
 
-Premièrement, il faut déterminer la densité de l'eau de mer via la fonction de *rho()* du package *seacard*. 
+Premièrement, il faut déterminer la densité de l'eau de mer via la fonction de *rho()* du package *seacarb*. 
 
 ```{r}
 (x <- seacarb::rho(S = 35, T = 25, P = 0))
@@ -52,12 +52,12 @@ rho_aragonite <- 2930
 (y <- buoyant_weight / (1 - (x / rho_aragonite)))
 ```
 
-Les étapes citées ci-dessus peuvent être facilement placé dans une fonction.
+Les étapes citées ci-dessus peuvent être facilement placées dans une fonction.
 
 ```{r}
 skeleton_weight <- function(buoyant_weight, S, T, P = 0, rho_aragonite = 2930){
-  x <- seacarb::rho(S = S, T = T, P = P)
-  y <- buoyant_weight / (1 - (x / rho_aragonite))
+  rho_sw <- seacarb::rho(S = S, T = T, P = P)
+  y <- buoyant_weight / (1 - (rho_sw / rho_aragonite))
   attributes(y) <- NULL
   y
 }

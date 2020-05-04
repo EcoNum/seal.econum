@@ -4,7 +4,9 @@
 \name{growth}
 \alias{growth}
 \title{Buoyant weight of corals over time}
-\format{An object of class \code{data.frame} with 32 rows and 7 columns.}
+\format{
+An object of class \code{data.frame} with 32 rows and 7 columns.
+}
 \usage{
 growth
 }

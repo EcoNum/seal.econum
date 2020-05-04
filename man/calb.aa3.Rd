@@ -7,10 +7,10 @@
 calb.aa3(obj, filter_list = NULL)
 }
 \arguments{
+\item{obj}{aa3 Data}
+
 \item{filter_list}{liste de concentration a supprimer pour recalculer
 la regression. ( ex : list(Ptot = c(1,2)) -> filter )}
-
-\item{aa3_combine}{aa3 Data}
 }
 \value{
 un dataframe
@@ -20,5 +20,4 @@ calb_aa3 function
 }
 \examples{
 # todo
-
 }

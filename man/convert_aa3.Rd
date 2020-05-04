@@ -24,5 +24,4 @@ Conversion du fichier fourni par l autoanalysuer seal AA3 au format txt  a l aid
 \examples{
 
 #todo
-
 }

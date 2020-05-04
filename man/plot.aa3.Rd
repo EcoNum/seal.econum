@@ -4,10 +4,12 @@
 \alias{plot.aa3}
 \title{plot aa3 file}
 \usage{
-\method{plot}{aa3}(obj, graph_type = "NO", old_data = FALSE)
+\method{plot}{aa3}(x, y, graph_type = "NO", old_data = FALSE, ...)
 }
 \arguments{
-\item{obj}{aa3 object}
+\item{x}{aa3 object}
+
+\item{y}{not used}
 
 \item{graph_type}{definir le type de graphique que l'on souhaite sortir, par
 defaut "NO". "ALL" pour sortir le graphique avec toute les donnees, "lm" pour
@@ -15,6 +17,8 @@ sortir le graphique de la régression pour la calibration}
 
 \item{old_data}{logical value to use data before modification, by default
 FALSE}
+
+\item{...}{further arguments (not used)}
 }
 \value{
 Une liste contenant un dataframe avec les donnees CALB,
@@ -26,5 +30,4 @@ plot aa3 file
 }
 \examples{
 #TODO
-
 }

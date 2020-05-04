@@ -19,8 +19,8 @@ knitr::opts_chunk$set(
 
 ## Guyliann Engels & Raphael Conotte
 
-[![Travis-CI Build Status](https://travis-ci.org/EcoNum/seal.econum.svg?branch=master)](https://travis-ci.org/EcoNum/seal.econum)
-[![License](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![Travis-CI Build Status](https://travis-ci.com/EcoNum/seal.econum.svg?branch=master)](https://travis-ci.com/EcoNum/seal.econum)
+[![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 ## Overview
 

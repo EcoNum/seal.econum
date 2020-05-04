@@ -22,10 +22,9 @@
 #' S = growth$salinity, T = growth$temperature, P = 0, rho_aragonite = 2930) # compute new variable
 #' growth$skeleton_weight # see the new variable
 #' # more information see vignette
-#'
-skeleton_weight <- function(buoyant_weight, S, T, P = 0, rho_aragonite = 2930){
-  x <- seacarb::rho(S = S, T = T, P = P)
-  y <- buoyant_weight / (1 - (x / rho_aragonite))
+skeleton_weight <- function(buoyant_weight, S, T, P = 0, rho_aragonite = 2930) {
+  rho_sw <- seacarb::rho(S = S, T = T, P = P)
+  y <- buoyant_weight / (1 - (rho_sw / rho_aragonite))
   attributes(y) <- NULL
   y
 }

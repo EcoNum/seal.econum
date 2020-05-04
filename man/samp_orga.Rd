@@ -4,7 +4,9 @@
 \name{samp_orga}
 \alias{samp_orga}
 \title{Sample organic with seal aa3}
-\format{An object of class \code{data.frame} with 6 rows and 20 columns.}
+\format{
+An object of class \code{data.frame} with 6 rows and 20 columns.
+}
 \usage{
 samp_orga
 }

@@ -13,7 +13,7 @@ Depends: R (>= 3.4.4)
 License: CC BY-SA 4.0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 7.1.0
 Imports:
     stats,
     seacarb,
@@ -28,7 +28,7 @@ Imports:
     ggplot2,
     dplyr,
     tidyr,
-    chart (>= 1.2.0),
+    chart (>= 1.3.0),
     broom,
     SciViews (>= 1.1.0),
     econum (>= 1.2.0)
@@ -36,10 +36,9 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-Remotes:  
+Remotes: 
     SciViews/flow,
     SciViews/chart,
     SciViews/SciViews,
-    EcoNum/econum,
-    econum/econum
+    EcoNum/econum
 VignetteBuilder: knitr

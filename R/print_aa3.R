@@ -1,6 +1,7 @@
 #' Print aa3 object
 #'
-#' @param obj aa3 object
+#' @param x aa3 object
+#' @param ... further arguments (not used)
 #'
 #' @return La fonction imprime la structure, les metadonnees, les methodes
 #' utilisees pour les mesures et les parametres des regressions lineaires de
@@ -16,57 +17,47 @@
 #'
 #' @examples
 #' #todo
-#'
-
-print.aa3 <- function(obj){
+print.aa3 <- function(x, ...) {
   # DATA
   cat("\n","An EcoNumData object with :", "\n")
-  dplyr::glimpse(obj)
-  print(visdat::vis_dat(obj))
+  dplyr::glimpse(x)
+  print(visdat::vis_dat(x))
 
   # METADATA
-  if ("metadata" %in% names(attributes(obj))) {
+  if ("metadata" %in% names(attributes(x))) {
     cat("\n", "Metadata : ", "\n")
-    if (is.null(attr(obj, which = "metadata")$topic)) {
-      dplyr::bind_rows(attributes(obj)$metadata[1:6]) %>.%
+    if (is.null(attr(x, "metadata")$topic)) {
+      dplyr::bind_rows(attributes(x)$metadata[1:6]) %>.%
         dplyr::mutate(., topic = "NULL") %>.%
         as.data.frame(.) %>.%
         print(.)
     } else {
-      dplyr::bind_rows(attributes(obj)$metadata) %>.%
+      dplyr::bind_rows(attributes(x)$metadata) %>.%
         as.data.frame(.) %>.%
         print(.)
     }
   }
 
   # METHODE
-  if ("method" %in% names(attributes(obj))) {
-    if (stringr::str_split(attr(obj, which = "metadata")$sample,
-                           pattern = "-")[[1]][2] == "orga") {
+  if ("method" %in% names(attributes(x))) {
+    if (stringr::str_split(attr(x, "metadata")$sample, pattern = "-")[[1]][2] == "orga") {
       cat("\n", "Use organic method :", "\n")
-    } else if (stringr::str_split(attr(obj, which = "metadata")$sample,
-                             pattern = "-")[[1]][2] == "inorga") {
+    } else if (stringr::str_split(attr(x, "metadata")$sample, pattern = "-")[[1]][2] == "inorga") {
       cat("\n", "Use inorganic method :", "\n")
     }
-
-    print(attr(obj, which = "method"))
+    print(attr(x, "method"))
   }
 
   # LINEAR MODEL
-  if ("calb_lm" %in% names(attributes(obj))) {
+  if ("calb_lm" %in% names(attributes(x))) {
     cat("\n", "Linear Model parameters : ", "\n")
-    if ("calb_lm_old" %in% names(attributes(obj))) {
-      attr(obj,
-           which = "calb_lm_old")[stringr::str_detect(attr(obj,
-                                                       which = "calb_lm_old")$std_name,
-                                                  pattern = "old"),] -> x
-
-      dplyr::bind_rows(attr(obj, which = "calb_lm"), x)
-
+    if ("calb_lm_old" %in% names(attributes(x))) {
+      x2 <- attr(x, "calb_lm_old")[stringr::str_detect(attr(x, "calb_lm_old")$std_name,
+        pattern = "old"),]
+      dplyr::bind_rows(attr(x, "calb_lm"), x2)
     } else {
-      print(attr(obj, which = "calb_lm" ))
+      print(attr(x, which = "calb_lm" ))
     }
   }
-
+  invisible(x)
 }
-

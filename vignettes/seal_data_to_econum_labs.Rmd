@@ -1,10 +1,10 @@
 ---
-title: "Importation, conversion, correction et analyse des données du seal aa3 du laboratoire d'econum"
+title: "Importation, conversion, correction et analyse des données du seal aa3 du laboratoire d'EcoNum"
 author: "Engels Guyliann & Raphael Conotte"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Importation, conversion, correction et analyse des données du seal aa3 du laboratoire d'econum}
+  %\VignetteIndexEntry{Importation, conversion, correction et analyse des données du seal aa3 du laboratoire d'EcoNum}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -43,15 +43,13 @@ Le seal AA3 renvoit des fichiers au format texte comme le montre le tableau ci-d
 
 ```{r}
 #load several packages 
-SciViews::R
+#SciViews::R
 
 aa3_txt <- "../inst/extra_data/181009A.TXT"
 
-aa3 <- readr::read_delim(file = aa3_txt, 
-                            delim = ";",
-                            col_names = FALSE,
-                            col_types = readr::cols( .default = "c"),
-                            locale = readr::locale(encoding = "LATIN1")) # particulary
+aa3 <- readr::read_delim(file = aa3_txt, delim = ";", col_names = FALSE,
+  col_types = readr::cols( .default = "c"),
+  locale = readr::locale(encoding = "LATIN1")) # particularly
 rmarkdown::paged_table(aa3)
 ```
 
@@ -86,13 +84,14 @@ Il est dès lors indispensable de proposer des outils permettant de combiner ces
 Tout d’abord, il est intéressant d’encoder proprement les données. Il faut de plus pallier aux manquements cités ci-dessus, la solutions la plus simple est de rédiger un second fichier sous la forme d’un template conçu à cet effet afin de venir ajouter l’ensemble des informations manquantes. Ce second document est d’une importance capitale afin de connaitre la provenance d’un échantillon. Pour ce faire, la colonne sample.id va servir de lien entre les deux tableaux. Le nom donné au second fichier est le même que celui du premier avec une extension différente.
 
 ```{r}
-SciViews::R
+#SciViews::R
 library(seal.econum)
 # importation de données exemples
 aa3_txt <- "../inst/extra_data/181009A.TXT"
 aa3_xlsx <- "../inst/extra_data/181009A.xlsx"
 # utilisation de la fonction d'importation et de conversion des données
-aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt, file_aa3_xlsx = aa3_xlsx, project =  "project_test")
+aa3_combine <- convert_aa3(file_aa3_txt = aa3_txt, file_aa3_xlsx = aa3_xlsx,
+  project =  "project_test")
 rmarkdown::paged_table(aa3_combine)
 ```
 
@@ -116,7 +115,6 @@ La première phase de validation débute par la visualisation des données et de
 ```{r}
 plot(aa3_combine)
 ```
-
 
 ## Correction des données de calibration
 
