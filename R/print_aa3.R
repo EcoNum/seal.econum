@@ -11,9 +11,6 @@
 #' @importFrom dplyr glimpse
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr mutate
-#' @importFrom stringr str_split
-#' @importFrom stringr str_detect
-#' @importFrom visdat vis_dat
 #'
 #' @examples
 #' #todo
@@ -21,7 +18,7 @@ print.aa3 <- function(x, ...) {
   # DATA
   cat("\n","An EcoNumData object with :", "\n")
   dplyr::glimpse(x)
-  print(visdat::vis_dat(x))
+  #print(visdat::vis_dat(x))
 
   # METADATA
   if ("metadata" %in% names(attributes(x))) {
@@ -40,9 +37,9 @@ print.aa3 <- function(x, ...) {
 
   # METHODE
   if ("method" %in% names(attributes(x))) {
-    if (stringr::str_split(attr(x, "metadata")$sample, pattern = "-")[[1]][2] == "orga") {
+    if (strsplit(attr(x, "metadata")$sample, split = "-", fixed = TRUE)[[1]][2] == "orga") {
       cat("\n", "Use organic method :", "\n")
-    } else if (stringr::str_split(attr(x, "metadata")$sample, pattern = "-")[[1]][2] == "inorga") {
+    } else if (strsplit(attr(x, "metadata")$sample, split = "-", fixed = TRUE)[[1]][2] == "inorga") {
       cat("\n", "Use inorganic method :", "\n")
     }
     print(attr(x, "method"))
@@ -52,8 +49,7 @@ print.aa3 <- function(x, ...) {
   if ("calb_lm" %in% names(attributes(x))) {
     cat("\n", "Linear Model parameters : ", "\n")
     if ("calb_lm_old" %in% names(attributes(x))) {
-      x2 <- attr(x, "calb_lm_old")[stringr::str_detect(attr(x, "calb_lm_old")$std_name,
-        pattern = "old"),]
+      x2 <- attr(x, "calb_lm_old")[grepl("old", attr(x, "calb_lm_old")$std_name),]
       dplyr::bind_rows(attr(x, "calb_lm"), x2)
     } else {
       print(attr(x, which = "calb_lm" ))

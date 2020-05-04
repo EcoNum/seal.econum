@@ -8,7 +8,6 @@
 #' @param topic particulary information on the project
 #'
 #' @return un objet converti
-#' @import stringr
 #' @import readr
 #' @import lubridate
 #' @import readxl
@@ -21,8 +20,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL) {
   # Import metadata and extract informaation
   header_read <- readr::read_lines(file_aa3_txt, n_max = 13,
     locale = readr::locale(encoding = "LATIN1"))
-  header <- stringr::str_extract_all(header_read,
-    "(-?\u03BC?\\w+:?\\.?-?/?\\w*:?/?\\d*)")
+  header <- strsplit(gsub('"', "", header_read), split =";+")
 
   # Rename list elements
   names(header) <- sapply(header, `[[`, 1)
@@ -43,7 +41,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL) {
     stop("erreur durant l importation ou l extraction des metadonnees")
 
   # Change NO3 in NOx
-  header$METH <- stringr::str_replace_all(header$METH, "NO3", "NOx")
+  header$METH <- gsub("NO3", "NOx", header$METH)
 
   # Extract nutrients that are analysed
   results <- header$METH[-1]
@@ -117,7 +115,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL) {
   lm_list <- list()
   for (i in 1:3) {
     # nutrient name
-    nutri_name <-  stringr::str_split(vals[i], pattern = "_")[[1]][1]
+    nutri_name <-  strsplit(vals[i], split = "_", fixed = TRUE)[[1]][1]
 
     lm_mod <- stats::lm(data = raw_data, stats::as.formula(paste(vals[i],"~", stds[i])))
 

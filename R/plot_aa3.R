@@ -13,7 +13,6 @@
 #' les graphes de controle pour la calibration, un dataframe avec les parametres
 #' des regressions et un dataframe avec les donnees SAMP filtrees
 #' @export
-#' @import stringr
 #' @importFrom chart chart
 #' @importFrom stats na.omit
 #' @importFrom stats lm
@@ -44,16 +43,16 @@ plot.aa3 <- function(x, y, graph_type = "NO", old_data = FALSE, ...) {
   samp_name <- attr(x, which = "metadata")$sample
 
   if (isTRUE(old_data)) {
-    a <- names(x)[stringr::str_detect(names(x), pattern = "values_old")]
-    b <- names(x)[stringr::str_detect(names(x), pattern = "std_old")]
-    stringr::str_split(a, pattern = "_") -> .
+    a <- names(x)[grepl("values_old", names(x))]
+    b <- names(x)[grepl("std_old", names(x))]
+    strsplit(a, split = "_", fixed = TRUE) -> .
       sapply(., `[[`, 1) -> .
       paste(., "old", sep = "_") -> nutri_name
     attr(x, "calb_lm_old") -> calb_lm
   } else {
-    a <- names(x)[stringr::str_detect(names(x), pattern = "values$")]
-    b <- names(x)[stringr::str_detect(names(x), pattern = "std$")]
-    stringr::str_split(a, pattern = "_") -> .
+    a <- names(x)[grepl("values$", names(x))]
+    b <- names(x)[grepl("std$", names(x))]
+    strsplit(a, split = "_", fixed = TRUE) -> .
     sapply(.,  `[[`, 1) -> nutri_name
     calb_lm <- attr(x, "calb_lm")
   }

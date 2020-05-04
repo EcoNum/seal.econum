@@ -7,8 +7,6 @@
 #' @return un dataframe
 #' @export
 #' @import ggplot2
-#' @importFrom stringr str_detect
-#' @importFrom stringr str_split
 #' @importFrom stats lm
 #' @importFrom stats as.formula
 #' @importFrom dplyr select
@@ -32,10 +30,10 @@ calb.aa3 <- function(obj, filter_list = NULL) {
   }
 
   # Values, std and conc vectors for nutrient
-  values <- names(obj)[stringr::str_detect(names(obj), pattern = "values")]
-  std <- names(obj)[stringr::str_detect(names(obj), pattern = "std")]
-  conc <- names(obj)[stringr::str_detect(names(obj), pattern = "conc")]
-  stringr::str_split(values, pattern = "_") %>%
+  values <- names(obj)[grepl("values", names(obj))]
+  std <- names(obj)[grepl("std", names(obj))]
+  conc <- names(obj)[grepl("conc", names(obj))]
+  strsplit(values, split = "_", fixed = TRUE) %>%
     sapply(`[[`, 1) ->
     nutri_name
 
