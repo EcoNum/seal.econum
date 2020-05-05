@@ -19,9 +19,6 @@
 #' @importFrom stats as.formula
 #' @import ggplot2
 #' @importFrom  dplyr select
-#' @importFrom broom tidy
-#' @importFrom broom glance
-#' @importFrom ggrepel geom_text_repel
 #' @importFrom chart ggarrange
 #' @importFrom ggpubr annotate_figure
 #' @importFrom ggpubr text_grob
@@ -89,23 +86,25 @@ plot.aa3 <- function(x, y, graph_type = "NO", old_data = FALSE, ...) {
       ggplot2::geom_text(x = 2*(diff(range(x[which(x$sample_type == "CALB" &
         x[, b[i]] != "NA"), b[i]])))/5 ,
         y = max(x[which(x$sample_type == "CALB" & x[,b[i]] != "NA"), a[i]]),
-        label = eq, parse = TRUE) +
-      ggrepel::geom_text_repel(ggplot2::aes(label = x[x[,b[i]] != "NA", b[i]]),
-        nudge_y = 1.5, nudge_x = 1.5, direction = "both",
-        segment.size = 0.2, na.rm = TRUE)
+        label = eq, parse = TRUE) #+
+      #ggrepel::geom_text_repel(ggplot2::aes(label = x[x[,b[i]] != "NA", b[i]]),
+      #  nudge_y = 1.5, nudge_x = 1.5, direction = "both",
+      #  segment.size = 0.2, na.rm = TRUE)
 
     if (graph_type == "ALL") {
       graph_aa3[[i]] <- x2 + ggplot2::ggtitle(nutri_name[i])
       names(graph_aa3)[i] <- paste(a[i])
     } else if (graph_type == "lm") {
-      graph_aa3[[i]] <- x3 + ggplot2::ggtitle(nutri_name[i])
+      graph_aa3[[i]] <- x3 + #ggplot2::ggtitle(nutri_name[i])
+      ggplot2::labs(title = nutri_name[i], subtitle = paste0("Data source: ", samp_name))
       names(graph_aa3)[i] <- paste(a[i])
     } else {
       x4 <- chart::ggarrange(x2, x3)
       ggpubr::annotate_figure(x4,
         top = ggpubr::text_grob(a[i], size =  14, face = "bold"),
         bottom = ggpubr::text_grob(paste0("Data source: ", samp_name),
-        color = "blue", hjust = 1,x = 1, face = "italic", size = 10)) -> x5
+        color = "blue", hjust = 1,x = 1, face = "italic", size = 10)
+      ) -> x5
       graph_aa3[[i]] <- x5
       names(graph_aa3)[i] <- paste(a[i])
     }

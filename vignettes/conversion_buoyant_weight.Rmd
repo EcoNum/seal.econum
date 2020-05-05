@@ -31,17 +31,18 @@ Le principe d'archimède permet de convertir le poids immergé en poids du squel
 
 $$w_{a} = \frac{w_{w}}{1 - \frac{D_w}{D_a}}$$
 
-où $w_{a}$ est le poids du squelette (principalement composé d'aragonite),  $w_{w}$ est le poids immergé, $D_w$ est densité de l'eau de mer (qui peut être calculé via la fonction `rho()` du package `seacarb`), $D_a$ est la densité de l'aragonite  qui est de $2390 \ g/dm^3$.
+où $w_{a}$ est le poids du squelette (principalement composé d'aragonite),  $w_{w}$ est le poids immergé, $D_w$ est densité de l'eau de mer (qui peut être calculé via la fonction `rho()`), $D_a$ est la densité de l'aragonite  qui est de $2390 \ g/dm^3$.
 
 Le changement de poids au cours du temps quantifie le taux de calcification ou autrement dit le taux de croissance. Il a été démontré que le pourcentage d'augementation de la masse du squelette au cours du temps dépend du poids initiale de la bouture. La présence de masse morte au sein des coraux est un problème dans la détermination du taux de croissance véritable des boutures.
 
 Partons d'un exemple d'une bouture de 1.5 grammes mesuré dans une eau avec une salinité de 35, une température de 25°C, et une pression hydrostatique de 0.
 
 
-Premièrement, il faut déterminer la densité de l'eau de mer via la fonction de *rho()* du package *seacarb*. 
+Premièrement, il faut déterminer la densité de l'eau de mer via la fonction `rho()`. 
 
 ```{r}
-(x <- seacarb::rho(S = 35, T = 25, P = 0))
+library(seal.econum)
+(rho_sw <- rho(S = 35, T = 25, P = 0))
 ```
 
 Ensuite, il faut employer la valeur obtenue ci-dessus pour déterminer la masse squeletique de la bouture.
@@ -49,14 +50,14 @@ Ensuite, il faut employer la valeur obtenue ci-dessus pour déterminer la masse 
 ```{r}
 buoyant_weight <- 1.5
 rho_aragonite <- 2930
-(y <- buoyant_weight / (1 - (x / rho_aragonite)))
+(y <- buoyant_weight / (1 - (rho_sw / rho_aragonite)))
 ```
 
 Les étapes citées ci-dessus peuvent être facilement placées dans une fonction.
 
 ```{r}
 skeleton_weight <- function(buoyant_weight, S, T, P = 0, rho_aragonite = 2930){
-  rho_sw <- seacarb::rho(S = S, T = T, P = P)
+  rho_sw <- rho(S = S, T = T, P = P)
   y <- buoyant_weight / (1 - (rho_sw / rho_aragonite))
   attributes(y) <- NULL
   y

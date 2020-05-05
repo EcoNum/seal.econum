@@ -2,9 +2,12 @@
 % Please edit documentation in R/skeleton_weight.R
 \name{skeleton_weight}
 \alias{skeleton_weight}
+\alias{rho}
 \title{Compute the skeleton weight with the buoyant weight}
 \usage{
 skeleton_weight(buoyant_weight, S, T, P = 0, rho_aragonite = 2930)
+
+rho(S = 35, T = 25, P = 0)
 }
 \arguments{
 \item{buoyant_weight}{buoyant weight in gramme}
@@ -22,6 +25,11 @@ skeleton weight
 }
 \description{
 The buoyant weight is a simply tools. This method reduces the stress during the manipulation of the coral's nubbins. The buoyant weight is used to calculate the skeleton weight. The evolution of skeleton weight can bu used to monitor the growth of the coral's nubbins.
+}
+\note{
+[rho()] is borrowed from [seacarb::rho()], but its code is copied here
+because do *not* want to import **seacarb** that itself depends on **oce**
+and **gsw** that bring a lot of useless additional dependencies!
 }
 \examples{
 

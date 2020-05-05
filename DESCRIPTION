@@ -16,27 +16,19 @@ LazyData: true
 RoxygenNote: 7.1.0
 Imports:
     stats,
-    seacarb,
     readxl,
     readr,
-    magrittr,
-    lubridate,
-    ggrepel,
     ggpubr,
-    flow (>= 1.1.0),
     ggplot2,
     dplyr,
     tidyr,
     chart (>= 1.3.0),
     broom,
-    SciViews (>= 1.1.0),
     econum (>= 1.2.0)
 Suggests:
     knitr,
     testthat
 Remotes: 
-    SciViews/flow,
     SciViews/chart,
-    SciViews/SciViews,
     EcoNum/econum
 VignetteBuilder: knitr

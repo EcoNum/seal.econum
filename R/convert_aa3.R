@@ -9,7 +9,6 @@
 #'
 #' @return un objet converti
 #' @import readr
-#' @import lubridate
 #' @import readxl
 #' @export
 #'
@@ -20,7 +19,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL) {
   # Import metadata and extract informaation
   header_read <- readr::read_lines(file_aa3_txt, n_max = 13,
     locale = readr::locale(encoding = "LATIN1"))
-  header <- strsplit(gsub('"', "", header_read), split =";+")
+  header <- strsplit(gsub('"', "", header_read), split = ";+")
 
   # Rename list elements
   names(header) <- sapply(header, `[[`, 1)
@@ -74,9 +73,9 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL) {
   meta <- list(
     sample      = paste(sub("\\.RUN$", "", header$RUN[2]), header$ANAL[2],sep = "-"),
     project     = project,
-    sample_date = lubridate::dmy_hms(paste(header$DATE[2], header$TIME[2])),
+    sample_date = as.POSIXct(paste(header$DATE[2], header$TIME[2]), format = "%d/%m/%Y %H:%M:%S"), #lubridate::dmy_hms(paste(header$DATE[2], header$TIME[2])),
     author      = header$OPER[2],
-    date        = lubridate::dmy(header$DATE[2]),
+    date        = as.Date(header$DATE[2], format = "%d/%m/%Y"), #lubridate::dmy(header$DATE[2]),
     comment     = header$COMM[2], topic = topic)
 
   # Extract raw data
@@ -92,7 +91,7 @@ convert_aa3 <- function(file_aa3_txt, file_aa3_xlsx, project, topic = NULL) {
 
   # Recoding type of variable
   raw_data$sample_type <- as.factor(raw_data$sample_type)
-  raw_data$date_time <- lubridate::dmy_hms(raw_data$date_time)
+  raw_data$date_time <- as.POSIXct(raw_data$date_time, format = "%d/%m/%Y %H:%M:%S")  #lubridate::dmy_hms(raw_data$date_time)
 
   # Add units informations
   for (i in 1:3) {

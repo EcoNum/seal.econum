@@ -11,7 +11,6 @@
 #' @importFrom stats as.formula
 #' @importFrom dplyr select
 #' @importFrom dplyr filter
-#' @importFrom ggrepel geom_text_repel
 #' @importFrom dplyr mutate
 #' @importFrom dplyr bind_rows
 #' @importFrom chart chart
@@ -23,7 +22,7 @@ calb.aa3 <- function(obj, filter_list = NULL) {
   # Check_2 : filter_list
   if (!is.null(filter_list)) {
     if (sum(!(names(filter_list) %in% attr(obj, "method")$method)) != 0 ) {
-      stop("Attention : pas de noms pour les elements de la liste ou pas de
+      stop("pas de noms pour les elements de la liste ou pas de
            correspondance, utiliser un ou plusieurs des noms suivants :
            'Ptot', 'NO2', 'NOx', 'Ntot', 'NH4', 'PO4'")
     }
